@@ -5,9 +5,9 @@ import styled from 'styled-components';
 export default function Home() {
     return (
         <Main>
-            <Title>Ollim Web</Title>
+            <Title>Ollim Web - Development</Title>
             <Description>
-                Welcome to Ollim Web - Your project is now set up with Next.js, TypeScript, PWA, Styled-components, and Recoil!
+                Welcome to Ollim Web development environment. This environment is set up with Next.js, TypeScript, PWA, Styled-components, and Recoil!
             </Description>
         </Main>
     );
