@@ -4,13 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 7777",
+    "dev:main": "next dev -p 7777",
+    "dev:dev": "next dev -p 7778",
     "build": "next build",
     "start": "next start -p 7777",
+    "start:main": "next start -p 7777",
+    "start:dev": "next start -p 7778",
     "lint": "next lint",
     "test": "vitest"
   },
   "dependencies": {
-    "@sentry/nextjs": "^8.0.0",
+    "@sentry/nextjs": "^9.8.0",
     "@vitejs/plugin-react": "^4.3.4",
     "next": "^14.1.0",
     "next-pwa": "^5.6.0",
