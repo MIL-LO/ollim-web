@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     description: 'Ollim Web Application',
 };
 
+
 export default function RootLayout({
                                        children,
                                    }: {
