@@ -9,7 +9,9 @@ export default function LoginPage() {
   return (
     <MobileLayout fullScreen={true}>
       <LoginContainer>
-        <LoginButtons />
+        <ButtonsWrapper>
+          <CenteredLoginButtons />
+        </ButtonsWrapper>
       </LoginContainer>
     </MobileLayout>
   );
@@ -28,6 +30,20 @@ const LoginContainer = styled.div`
     background-image: url('/images/splash.png');
     background-size: cover;
     background-position: center;
+`;
+
+// 버튼을 감싸는 wrapper에 마진 바텀과 너비 100% 적용
+const ButtonsWrapper = styled.div`
+    width: 100%;
+    margin-bottom: 80px;
+    display: flex;
+    justify-content: center;
+`;
+
+// LoginButtons 컴포넌트를 확장하여 너비를 100%로 설정
+const CenteredLoginButtons = styled(LoginButtons)`
+    width: 100%;
+    max-width: 320px;
 `;
 
 const BottomIndicator = styled.div`
