@@ -84,13 +84,13 @@ const BottomNavigation = () => {
 
 const NavigationWrapper = styled.div`
     position: fixed;
-    bottom: 0;
+    bottom: -10px; /* 10px 더 아래로 내림 */
     left: 0;
     right: 0;
     width: 100%;
     max-width: 768px;
     margin: 0 auto;
-    height: 160px;
+    height: 120px;
     z-index: 10;
     background: none;
 
@@ -147,9 +147,9 @@ const MenuItem = styled.div`
     height: 100%;
     gap: 8px;
     cursor: pointer;
-    padding-bottom: 15px; /* 패딩 증가로 텍스트가 잘리지 않도록 함 */
+    padding-bottom: 25px; /* 패딩을 더 키워 텍스트가 더 아래에 위치하도록 함 */
     position: relative;
-    margin-top: ${props => props.$isPrimary ? '-15px' : '-40px'};
+    margin-top: ${props => props.$isPrimary ? '-15px' : '-30px'};
 `;
 
 const CenterButton = styled.div`
@@ -182,7 +182,7 @@ const MenuLabel = styled.span`
     white-space: nowrap;
     overflow: visible;
     position: relative;
-    bottom: 0;
+    bottom: -10px; /* 텍스트를 더 아래로 내림 */
     gap: 10px;
 `;
 
