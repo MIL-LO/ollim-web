@@ -14,12 +14,8 @@ const LoginButtons: React.FC = () => {
 
   return (
     <ButtonContainer>
-      <AppleButton onClick={handleAppleLogin}>
-        Apple로 시작하기
-      </AppleButton>
-      <GoogleButton onClick={handleGoogleLogin}>
-        Google로 시작하기
-      </GoogleButton>
+      <AppleButton onClick={handleAppleLogin}>Apple로 시작하기</AppleButton>
+      <GoogleButton onClick={handleGoogleLogin}>Google로 시작하기</GoogleButton>
     </ButtonContainer>
   );
 };
@@ -42,14 +38,14 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.2s;
-  
+
   &:hover {
     opacity: 0.9;
   }
 `;
 
 const AppleButton = styled(Button)`
-  background-color: #1E293B;
+  background-color: #1e293b;
   color: white;
   border: none;
 `;

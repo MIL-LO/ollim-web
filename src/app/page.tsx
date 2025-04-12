@@ -20,22 +20,18 @@ export default function Home() {
     }
   }, [router]);
 
-  return (
-    <SplashContainer>
-      {/* 스플래시 화면 표시 (리다이렉션되기 전까지) */}
-    </SplashContainer>
-  );
+  return <SplashContainer>{/* 스플래시 화면 표시 (리다이렉션되기 전까지) */}</SplashContainer>;
 }
 
 const SplashContainer = styled.div`
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    position: relative;
-    background-image: url('/images/splash.png');
-    background-size: cover;
-    background-position: center;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  background-image: url('/images/splash.png');
+  background-size: cover;
+  background-position: center;
 `;

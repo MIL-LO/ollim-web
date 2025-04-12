@@ -10,9 +10,7 @@ const RootLayout = ({ children }) => {
     <StyledComponentsRegistry>
       <GlobalStyle />
       <RecoilRoot>
-        <div className="app-container">
-          {children}
-        </div>
+        <div className="app-container">{children}</div>
       </RecoilRoot>
     </StyledComponentsRegistry>
   );
