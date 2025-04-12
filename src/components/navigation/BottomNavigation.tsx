@@ -39,6 +39,7 @@ const BottomNavigation = () => {
           />
         </svg>
       </NavBackground>
+      <BottomIndicatorArea />
 
       {/* 네비게이션 바 */}
       <NavBar>
@@ -46,21 +47,24 @@ const BottomNavigation = () => {
           <MenuItem
             key={item.id}
             onClick={() => handleMenuClick(item.id)}
-            active={activeItem === item.id}
-            isPrimary={item.primary}
+            $isActive={activeItem === item.id}
+            $isPrimary={item.primary}
           >
             {item.primary ? (
-              <CenterButton>
-                <Image
-                  src={item.icon}
-                  alt={item.label}
-                  width={26}
-                  height={26}
-                />
-              </CenterButton>
+              <>
+                <CenterButton>
+                  <Image
+                    src={item.icon}
+                    alt={item.label}
+                    width={26}
+                    height={26}
+                  />
+                </CenterButton>
+                <PrimaryMenuLabel $isActive={activeItem === item.id}>{item.label}</PrimaryMenuLabel>
+              </>
             ) : (
               <>
-                <IconContainer active={activeItem === item.id}>
+                <IconContainer $isActive={activeItem === item.id}>
                   <Image
                     src={item.icon}
                     alt={item.label}
@@ -68,7 +72,7 @@ const BottomNavigation = () => {
                     height={20}
                   />
                 </IconContainer>
-                <MenuLabel active={activeItem === item.id}>{item.label}</MenuLabel>
+                <MenuLabel $isActive={activeItem === item.id}>{item.label}</MenuLabel>
               </>
             )}
           </MenuItem>
@@ -106,11 +110,12 @@ const NavBar = styled.nav`
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    padding: 0 10px;
     position: absolute;
     bottom: 0;
     z-index: 5;
     background: none;
+    padding: 0 15px;
+    gap:30px
 `;
 
 const MenuItem = styled.div`
@@ -118,60 +123,81 @@ const MenuItem = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex: 1;
+    flex: 0.2;
     height: 100%;
+    gap:8px;
     cursor: pointer;
-    padding-bottom: ${props => props.isPrimary ? '0' : '10px'};
+    padding-bottom: 15px; /* 패딩 증가로 텍스트가 잘리지 않도록 함 */
     position: relative;
-    margin-top: -40px;
+    margin-top: ${props => props.$isPrimary ? '-15px' : '-40px'};
 `;
 
 const CenterButton = styled.div`
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background-color: #00BCD4;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: -18px;
-    left: 50%;
+    top: -30px;
+    left: 57%;
     transform: translateX(-50%);
     z-index: 20;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
 
     & > span {
-        width: 26px !important;
-        height: 26px !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
+        margin-left: 5px;
     }
+`;
+
+const MenuLabel = styled.span`
+    font-size: 12px;
+    color: ${({ $isActive }) => ($isActive ? '#000000' : '#E8ECEF')};
+    font-weight: ${({ $isActive }) => ($isActive ? '500' : '400')};
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: visible;
+    position: relative;
+    bottom: 0;
+    gap:10px;
+
+`;
+
+const PrimaryMenuLabel = styled(MenuLabel)`
+    margin-left: 5px; // 감정 기록하기 텍스트를 위한 margin-left 추가
+    margin-top: 3px;
 `;
 
 const IconContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 24px;
-    height: 24px;
-    margin-bottom: 4px;
+    width: 10px;
+    height: 10px;
+    margin-bottom: 8px;
 
     & > span {
         width: 20px !important;
         height: 20px !important;
     }
 
-    filter: ${props => props.active
+    filter: ${props => props.$isActive
             ? 'brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(324deg) brightness(96%) contrast(104%)'
             : 'brightness(0) saturate(100%) invert(92%) sepia(4%) saturate(167%) hue-rotate(182deg) brightness(97%) contrast(92%)'};
 `;
 
-const MenuLabel = styled.span`
-    font-size: 12px;
-    color: ${({ active }) => (active ? '#000000' : '#E8ECEF')};
-    font-weight: ${({ active }) => (active ? '500' : '400')};
+const BottomIndicatorArea = styled.div`
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 44px;
+    background-color: #F5F5F5; // 조금 더 진한 흰색 (원하는 색상으로 조정 가능)
+    z-index: 1; // NavBackground보다 위, NavBar보다 아래에 위치하도록
 `;
 
 export default BottomNavigation;
