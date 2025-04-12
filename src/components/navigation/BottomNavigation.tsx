@@ -31,7 +31,7 @@ const BottomNavigation = () => {
           width="100%"
           height="100%"
           viewBox="0 0 390 160"
-          preserveAspectRatio="none"
+          preserveAspectRatio="xMidYMax meet"
         >
           <path
             d="M 193.5 15 L 203.5 16 L 209.5 18 Q 219.2 22.3 225 30.5 Q 228 38 234.5 42 L 243.5 47 L 252.5 49 L 390 49 L 390 160 L 0 160 L 0 49.5 L 0.5 49 L 137.5 49 L 146.5 47 L 154.5 43 L 163 34.5 Q 166.3 26.3 173.5 22 L 180.5 18 L 193.5 15 Z"
@@ -93,6 +93,11 @@ const NavigationWrapper = styled.div`
     height: 160px;
     z-index: 10;
     background: none;
+
+    @media (min-width: 768px) {
+        width: 100%;
+        max-width: 390px;
+    }
 `;
 
 const NavBackground = styled.div`
@@ -102,6 +107,21 @@ const NavBackground = styled.div`
     width: 100%;
     height: 100%;
     z-index: 0;
+
+    svg {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+    }
+
+    @media (min-width: 768px) {
+        svg {
+            max-height: 100%;
+            object-fit: cover;
+        }
+    }
 `;
 
 const NavBar = styled.nav`
@@ -115,7 +135,7 @@ const NavBar = styled.nav`
     z-index: 5;
     background: none;
     padding: 0 15px;
-    gap:30px
+    gap: 30px;
 `;
 
 const MenuItem = styled.div`
@@ -125,7 +145,7 @@ const MenuItem = styled.div`
     justify-content: center;
     flex: 0.2;
     height: 100%;
-    gap:8px;
+    gap: 8px;
     cursor: pointer;
     padding-bottom: 15px; /* 패딩 증가로 텍스트가 잘리지 않도록 함 */
     position: relative;
@@ -163,8 +183,7 @@ const MenuLabel = styled.span`
     overflow: visible;
     position: relative;
     bottom: 0;
-    gap:10px;
-
+    gap: 10px;
 `;
 
 const PrimaryMenuLabel = styled(MenuLabel)`
