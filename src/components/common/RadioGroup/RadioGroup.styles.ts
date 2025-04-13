@@ -4,15 +4,17 @@ export const RadioGroupContainer = styled.div<{ direction: 'horizontal' | 'verti
   display: flex;
   flex-direction: ${({ direction }) => (direction === 'horizontal' ? 'row' : 'column')};
   gap: ${({ direction }) => (direction === 'horizontal' ? '12px' : '8px')};
-  margin: 0 auto;
+  margin: 0;
+  justify-content: flex-start;
 `;
 
 export const RadioOption = styled.label<{ active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 57px;
+  min-width: 57px;
   height: 36px;
+  padding: 0 16px;
   background-color: #ffffff;
   color: ${({ active }) => (active ? '#00B8D4' : '#A5B7C6')};
   border: ${({ active }) => (active ? '1px solid #00B8D4' : 'none')};
