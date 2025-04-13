@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   DatePickerContainer,
   Label,
@@ -31,8 +31,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
   // 현재 날짜를 YYYY-MM-DD 형식으로 얻기
   const today = new Date().toISOString().split('T')[0];
 
-  // 입력값이 있는지 확인
-  const hasValue = value && value.trim() !== '';
+  // 입력값이 있는지 확인 (명시적으로 boolean으로 변환)
+  const hasValue: boolean = Boolean(value && value.trim() !== '');
 
   // 값이 변경될 때 onChange 콜백 호출
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
