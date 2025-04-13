@@ -71,9 +71,6 @@ export default function Step2() {
     { value: 'artcenter', label: '아르바이트' },
     { value: 'company', label: '회사' },
     { value: 'school', label: '학교' },
-    { value: 'cafe', label: '카페' },
-    { value: 'park', label: '공원' },
-    { value: 'library', label: '도서관' },
   ];
 
   // 다음 버튼 활성화 여부
