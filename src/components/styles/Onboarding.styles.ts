@@ -146,12 +146,14 @@ export const PlaceButtonsContainer = styled.div`
   }
 `;
 
+// components/styles/Onboarding.styles.tsx에서 PlaceButton 수정
+
 export const PlaceButton = styled.button<{ selected: boolean }>`
   min-width: fit-content;
   padding: 10px 16px;
-  background-color: ${(props) => (props.selected ? '#00B8D4' : '#ffffff')};
-  color: ${(props) => (props.selected ? '#ffffff' : '#A5B7C6')};
-  border: ${(props) => (props.selected ? 'none' : '1px solid #E0E0E0')};
+  background-color: #ffffff;
+  color: ${(props) => (props.selected ? '#00B8D4' : '#A5B7C6')};
+  border: ${(props) => (props.selected ? '1px solid #00B8D4' : 'none')};
   border-radius: 20px;
   font-size: 14px;
   font-weight: ${(props) => (props.selected ? '700' : '400')};
@@ -160,7 +162,7 @@ export const PlaceButton = styled.button<{ selected: boolean }>`
   white-space: nowrap;
 
   &:hover {
-    background-color: ${(props) => (props.selected ? '#00A5C0' : '#F5F5F5')};
+    border: ${(props) => (props.selected ? '1px solid #00B8D4' : '1px solid #BDBDBD')};
   }
 
   &:disabled {
