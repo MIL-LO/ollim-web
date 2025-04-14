@@ -1,59 +1,96 @@
-import React from 'react';
-import styled from 'styled-components';
+// src/components/auth/LoginButtons.tsx
+'use client';
 
-const LoginButtons: React.FC = () => {
-  const handleAppleLogin = () => {
-    console.log('Apple 로그인 시도');
-    // 애플 로그인 처리 로직
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useRecoilState } from 'recoil';
+import { authState } from '@/atoms/authAtoms';
+import { ButtonContainer, AppleButton, GoogleButton, ErrorMessage } from './styles';
+
+interface LoginButtonsProps {
+  className?: string;
+}
+
+const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
+  const router = useRouter();
+  const [auth, setAuth] = useRecoilState(authState);
+
+  const handleAppleLogin = async () => {
+    try {
+      setAuth((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      // 애플 로그인 로직 구현
+      // 여기서는 로그인 성공을 가정
+      console.log('Apple 로그인 시도');
+
+      // 로그인 성공 시 상태 업데이트
+      setAuth({
+        isLoggedIn: true,
+        user: {
+          id: 'apple-user-id',
+          name: 'Apple User',
+          provider: 'apple',
+        },
+        isLoading: false,
+        error: null,
+      });
+
+      // 홈 화면으로 이동
+      router.push('/home');
+    } catch (error) {
+      console.error('Apple 로그인 에러:', error);
+      setAuth((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: '애플 로그인에 실패했습니다.',
+      }));
+    }
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google 로그인 시도');
-    // 구글 로그인 처리 로직
+  const handleGoogleLogin = async () => {
+    try {
+      setAuth((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      // 구글 로그인 로직 구현
+      // 여기서는 로그인 성공을 가정
+      console.log('Google 로그인 시도');
+
+      // 로그인 성공 시 상태 업데이트
+      setAuth({
+        isLoggedIn: true,
+        user: {
+          id: 'google-user-id',
+          name: 'Google User',
+          provider: 'google',
+        },
+        isLoading: false,
+        error: null,
+      });
+
+      // 홈 화면으로 이동
+      router.push('/home');
+    } catch (error) {
+      console.error('Google 로그인 에러:', error);
+      setAuth((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: '구글 로그인에 실패했습니다.',
+      }));
+    }
   };
 
   return (
-    <ButtonContainer>
-      <AppleButton onClick={handleAppleLogin}>Apple로 시작하기</AppleButton>
-      <GoogleButton onClick={handleGoogleLogin}>Google로 시작하기</GoogleButton>
+    <ButtonContainer className={className}>
+      <AppleButton onClick={handleAppleLogin} disabled={auth.isLoading}>
+        Apple로 시작하기
+      </AppleButton>
+      <GoogleButton onClick={handleGoogleLogin} disabled={auth.isLoading}>
+        Google로 시작하기
+      </GoogleButton>
+
+      {auth.error && <ErrorMessage>{auth.error}</ErrorMessage>}
     </ButtonContainer>
   );
 };
-
-const ButtonContainer = styled.div`
-  width: 100%;
-  max-width: 320px;
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 1;
-`;
-
-const Button = styled.button`
-  width: 100%;
-  padding: 15px 0;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.9;
-  }
-`;
-
-const AppleButton = styled(Button)`
-  background-color: #1e293b;
-  color: white;
-  border: none;
-`;
-
-const GoogleButton = styled(Button)`
-  background-color: white;
-  color: #333;
-  border: 1px solid #ddd;
-`;
 
 export default LoginButtons;
