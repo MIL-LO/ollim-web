@@ -5,7 +5,7 @@ import StyledComponentsRegistry from '@/lib/registry';
 import GlobalStyle from '@/styles/GlobalStyle';
 import { RecoilRoot } from 'recoil';
 
-const RootLayout = ({ children }) => {
+const ClientLayout = ({ children }) => {
   return (
     <StyledComponentsRegistry>
       <GlobalStyle />
@@ -16,4 +16,4 @@ const RootLayout = ({ children }) => {
   );
 };
 
-export default RootLayout;
+export default ClientLayout;
