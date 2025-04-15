@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import ClientLayout from '@/components/layout/ClientLayout';
 import RecoilProvider from '@/components/providers/RecoilProvider';
+import ClientLayout from '@/components/layout/ClientRootLayout';
 
 const inter = Inter({ subsets: ['latin'] });
 

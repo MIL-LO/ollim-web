@@ -1,23 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import StyledComponentsRegistry from '@/lib/registry';
 import GlobalStyle from '@/styles/GlobalStyle';
 import { RecoilRoot } from 'recoil';
 
 interface ClientLayoutProps {
-    children: React.ReactNode;
+  children: ReactNode;
 }
 
 const ClientLayout = ({ children }: ClientLayoutProps) => {
-    return (
-        <RecoilRoot>
-            <StyledComponentsRegistry>
-                <GlobalStyle />
-                {children}
-            </StyledComponentsRegistry>
-        </RecoilRoot>
-    );
+  return (
+    <StyledComponentsRegistry>
+      <GlobalStyle />
+      <RecoilRoot>
+        <div className="app-container">{children}</div>
+      </RecoilRoot>
+    </StyledComponentsRegistry>
+  );
 };
 
 export default ClientLayout;
