@@ -12,7 +12,6 @@ import {
   BackButton,
   Title,
   ProgressBarWrapper,
-  ProgressBar,
   ContentContainer,
   Header,
   Subtitle,
@@ -26,6 +25,7 @@ import {
   ButtonContainer,
 } from './styles';
 import { Button } from '@/components/common';
+import ProgressBar from '@/components/common/ProgressBar'; // 새로운 ProgressBar 컴포넌트 import
 
 // 이미지 파일명 맵핑
 const moodImageMap = {
@@ -88,7 +88,8 @@ export default function RecordEmotionPage() {
       </HeaderContainer>
 
       <ProgressBarWrapper>
-        <ProgressBar progress={20} />
+        {/* 새로운 ProgressBar 컴포넌트 사용 */}
+        <ProgressBar steps={5} currentStep={1} />
       </ProgressBarWrapper>
 
       <ContentContainer>

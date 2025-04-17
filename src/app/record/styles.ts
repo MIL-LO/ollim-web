@@ -77,17 +77,17 @@ export const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 24px;
-  padding-top: 20px;
+  padding-top: 40px; // 20px에서 40px로 증가시켜 아래로 내림
   padding-bottom: 100px;
 `;
 
 export const Header = styled.div`
-  margin-bottom: 25px;
+  margin-bottom: 35px; // 25px에서 35px로 증가
   text-align: center;
 `;
 
 export const Subtitle = styled.h2`
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 600;
   color: #333;
   margin-bottom: 8px;
@@ -95,13 +95,13 @@ export const Subtitle = styled.h2`
 `;
 
 export const FormSection = styled.div`
-  margin-top: -10px;
+  margin-top: -10px; // -10px에서 10px로 변경하여 아래로 내림
   width: 100%;
 `;
 
 export const Label = styled.p`
   display: block;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   color: #666;
   margin-bottom: 30px;
