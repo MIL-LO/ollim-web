@@ -13,7 +13,6 @@ export default function LoginPage() {
         <ButtonsWrapper>
           <LoginButtons />
         </ButtonsWrapper>
-        <BottomIndicator />
       </LoginContainer>
     </MobileLayout>
   );
