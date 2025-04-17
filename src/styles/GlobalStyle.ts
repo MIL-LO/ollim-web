@@ -10,6 +10,13 @@ const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
         padding: 0;
         margin: 0;
+
+        /*스크롤숨김*/
+        scrollbar-width: none; //Firefox
+        -ms-overflow-style: none; //IE, Edge
+    }
+    *::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
     }
 
     html, body {
