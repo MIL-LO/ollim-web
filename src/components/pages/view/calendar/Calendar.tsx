@@ -26,6 +26,7 @@ export const Calendar = () => {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth()); // 4월 (0-indexed)
   const [currentWeek, setCurrentWeek] = useState(getWeekOfMonth(today));
+  const [showDateSelector, setShowDateSelector] = useState(false);
 
   const startDate =
     selectedTabMenu === '월간'
@@ -43,6 +44,22 @@ export const Calendar = () => {
     const endStr = extractDateOnly(endDate.toISOString());
     return entryDate >= startStr && entryDate <= endStr;
   });
+
+  // DateSelector 완료 시 실행
+  const handleDateSelect = (selected: { year: string; month: string; week: string }) => {
+    const newYear = Number(selected.year);
+    const newMonth = Number(selected.month) - 1;
+    const newWeek = Number(selected.week);
+
+    setYear(newYear);
+    setMonth(newMonth);
+
+    if (selectedTabMenu === '주간') {
+      setCurrentWeek(newWeek);
+    }
+
+    setIsDateSelectorModal(false);
+  };
 
   // 월간 - 지난달 보기
   const goToPrevMonth = () => {
@@ -121,7 +138,13 @@ export const Calendar = () => {
       <DiaryPreviewList listData={filteredDiaryList} />
 
       {/* 날짜셀렉모달 */}
-      {isDateSelectorModal && <DateSelectorModal onClose={() => setIsDateSelectorModal(false)} />}
+      {isDateSelectorModal && (
+        <DateSelectorModal
+          mode={selectedTabMenu}
+          onClose={() => setIsDateSelectorModal(false)}
+          onComplete={handleDateSelect}
+        />
+      )}
     </Layout>
   );
 };

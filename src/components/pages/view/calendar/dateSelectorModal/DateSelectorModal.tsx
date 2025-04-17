@@ -6,18 +6,36 @@ import { MonthStep } from './MonthStep';
 import { WeekStep } from './WeekStep';
 
 interface Props {
+  mode: '월간' | '주간';
   onClose: () => void;
   onComplete?: (selected: { year: string; month: string; week: string }) => void;
 }
-const DateSelectorModal = ({ onClose, onComplete }: Props) => {
-  const [step, setStep] = useState<'year' | 'month' | 'week'>('year');
+type Step = 'year' | 'month' | 'week';
+
+const DateSelectorModal = ({ mode, onClose, onComplete }: Props) => {
+  const [step, setStep] = useState<Step>('year');
   const [selected, setSelected] = useState({ year: '', month: '', week: '' });
 
   // 다음 버튼 활성화
-  const isNextEnabled =
-    (step === 'year' && selected.year) ||
-    (step === 'month' && selected.month) ||
-    (step === 'week' && selected.week);
+  const isNextEnabled = (() => {
+    switch (step) {
+      case 'year':
+        return !!selected.year;
+      case 'month':
+        return !!selected.month;
+      case 'week':
+        return !!selected.week;
+      default:
+        return false;
+    }
+  })();
+
+  // 닫기 버튼
+  const handleClose = () => {
+    setSelected({ year: '', month: '', week: '' });
+    setStep('year');
+    onClose();
+  };
 
   // 연도 선택
   const handleYearSelect = (year: string) => {
@@ -30,23 +48,31 @@ const DateSelectorModal = ({ onClose, onComplete }: Props) => {
   };
 
   // 주 선택
-  const handleWeekSelect = (week: string) => {
-    setSelected((prev) => ({ ...prev, week }));
+  const handleWeekSelect = (week: number) => {
+    const updated = { ...selected, week: String(week) }; // 저장은 string으로 유지
+    setSelected(updated);
+    onComplete?.(updated);
   };
 
   // 다음 단계 전환
   const handleNextStep = () => {
-    if (step === 'year') setStep('month');
-    else if (step === 'month') setStep('week');
-    else if (step === 'week' && selected.week) {
-      onComplete?.(selected); //외부로 선택값 전달
+    if (step === 'year') {
+      setStep('month');
+    } else if (step === 'month') {
+      if (mode === '월간') {
+        onComplete?.({ ...selected, week: '1' });
+      } else {
+        setStep('week');
+      }
+    } else if (step === 'week' && selected.week) {
+      onComplete?.(selected);
     }
   };
 
   return (
     <Layout>
       <Modal>
-        <button className="exitBtn" onClick={onClose}>
+        <button className="exitBtn" onClick={handleClose}>
           <ExitSVG color="#04192B" />
         </button>
         <Content>
@@ -76,12 +102,12 @@ const DateSelectorModal = ({ onClose, onComplete }: Props) => {
               year={Number(selected.year)}
               month={Number(selected.month) - 1}
               selectedWeek={Number(selected.week)}
-              onSelect={(week) => setSelected((prev) => ({ ...prev, week: String(week) }))}
+              onSelect={handleWeekSelect}
             />
           )}
         </Content>
         <NextBtn onClick={handleNextStep} disabled={!isNextEnabled}>
-          {step === 'week' ? '완료' : '다음'}
+          {mode === '월간' ? '완료' : step === 'week' ? '완료' : '다음'}
         </NextBtn>
       </Modal>
     </Layout>
