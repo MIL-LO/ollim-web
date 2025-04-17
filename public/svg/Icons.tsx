@@ -36,6 +36,15 @@ export const RightTriangleSVG = () => (
   </svg>
 );
 
+export const BelowTriangleSVG = () => (
+  <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M9.77573 11.625C9.43096 12.125 8.56904 12.125 8.22427 11.625L5.12134 7.125C4.77657 6.625 5.20753 6 5.89707 6L12.1029 6C12.7925 6 13.2234 6.625 12.8787 7.125L9.77573 11.625Z"
+      fill="#00AFD8"
+    />
+  </svg>
+);
+
 export const EditSVG = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -54,13 +63,13 @@ export const HeartSVG = ({ color }: { color: string }) => (
   </svg>
 );
 
-export const ExitSVG = () => (
+export const ExitSVG = ({ color }: { color?: string }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
       d="M4.28033 3.21966C3.98743 2.92677 3.51256 2.92677 3.21967 3.21966C2.92677 3.51256 2.92677 3.98743 3.21967 4.28032L7.93934 9L3.21967 13.7197C2.92678 14.0126 2.92678 14.4874 3.21967 14.7803C3.51256 15.0732 3.98744 15.0732 4.28033 14.7803L9 10.0607L13.7197 14.7803C14.0126 15.0732 14.4874 15.0732 14.7803 14.7803C15.0732 14.4874 15.0732 14.0126 14.7803 13.7197L10.0607 9L14.7803 4.28033C15.0732 3.98744 15.0732 3.51256 14.7803 3.21967C14.4874 2.92678 14.0126 2.92678 13.7197 3.21967L9 7.93934L4.28033 3.21966Z"
-      fill="#A5B7C6"
+      fill={color ?? '#A5B7C6'}
     />
   </svg>
 );

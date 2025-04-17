@@ -33,7 +33,7 @@ const CellWrapper = styled.div<{ $dimmed: boolean }>`
   align-items: center;
   opacity: ${(props) => (props.$dimmed ? 0.2 : 1)};
 
-  width: 32px;
+  flex: 1;
   height: 46px;
 `;
 

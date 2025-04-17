@@ -8,9 +8,18 @@ interface Props {
   mode: '월간' | '주간';
   onPrev: () => void;
   onNext: () => void;
+  dateSelectorOn: () => void;
 }
 
-export const CalendarNavigation = ({ year, month, week, mode, onPrev, onNext }: Props) => {
+export const CalendarNavigation = ({
+  year,
+  month,
+  week,
+  mode,
+  onPrev,
+  onNext,
+  dateSelectorOn,
+}: Props) => {
   const title = mode === '월간' ? `${year}년 ${month + 1}월` : `${year}년 ${month + 1}월 ${week}주`;
 
   return (
@@ -19,7 +28,7 @@ export const CalendarNavigation = ({ year, month, week, mode, onPrev, onNext }: 
         <LeftTriangleSVG />
       </NavButton>
 
-      <Title>{title}</Title>
+      <Title onClick={dateSelectorOn}>{title}</Title>
 
       <NavButton onClick={onNext}>
         <RightTriangleSVG />
@@ -45,6 +54,7 @@ const Title = styled.div`
   color: #04192b;
 
   user-select: none;
+  cursor: pointer;
 `;
 
 const NavButton = styled.button`

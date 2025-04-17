@@ -14,6 +14,7 @@ import {
 } from '@/lib/calenderUtils';
 import { diaryMockData, moodMockData } from '../MockData';
 import DiaryPreviewList from '../DiaryPreviewList';
+import DateSelectorModal from './dateSelectorModal/DateSelectorModal';
 
 const tabs = ['월간', '주간'] as const;
 type Tab = (typeof tabs)[number];
@@ -21,6 +22,7 @@ type Tab = (typeof tabs)[number];
 export const Calendar = () => {
   const today = new Date();
   const [selectedTabMenu, setSelectedTabMenu] = useState<Tab>('월간');
+  const [isDateSelectorModal, setIsDateSelectorModal] = useState<boolean>(false);
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth()); // 4월 (0-indexed)
   const [currentWeek, setCurrentWeek] = useState(getWeekOfMonth(today));
@@ -106,6 +108,7 @@ export const Calendar = () => {
           mode={selectedTabMenu}
           onPrev={selectedTabMenu === '월간' ? goToPrevMonth : goToPrevWeek}
           onNext={selectedTabMenu === '월간' ? goToNextMonth : goToNextWeek}
+          dateSelectorOn={() => setIsDateSelectorModal(true)}
         />
         {selectedTabMenu === '월간' ? (
           <MonthlyCalendar year={year} month={month} moodData={moodMockData} />
@@ -116,6 +119,9 @@ export const Calendar = () => {
 
       {/* 일기미리보기리스트 */}
       <DiaryPreviewList listData={filteredDiaryList} />
+
+      {/* 날짜셀렉모달 */}
+      {isDateSelectorModal && <DateSelectorModal onClose={() => setIsDateSelectorModal(false)} />}
     </Layout>
   );
 };

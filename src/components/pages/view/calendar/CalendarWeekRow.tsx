@@ -20,13 +20,7 @@ export const CalendarWeekRow = ({
 }: CalendarRowProps) => {
   return (
     <Wrapper>
-      {showDayLabels && (
-        <DaysRow>
-          {DAYS.map((d) => (
-            <DayTitle key={d}>{d}</DayTitle>
-          ))}
-        </DaysRow>
-      )}
+      {showDayLabels && <DaysTitle />}
       <Row>
         {dates.map((date) => {
           const dateKey = toLocalDateKey(date);
@@ -52,10 +46,24 @@ const Wrapper = styled.div`
   gap: 8px;
 `;
 
+const Row = styled.div`
+  display: flex;
+  justify-content: space-between;
+  height: 46px;
+`;
+
+export const DaysTitle = () => {
+  return (
+    <DaysRow>
+      {DAYS.map((d) => (
+        <DayTitle key={d}>{d}</DayTitle>
+      ))}
+    </DaysRow>
+  );
+};
 const DaysRow = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 12px;
 `;
 
 const DayTitle = styled.div`
@@ -65,10 +73,4 @@ const DayTitle = styled.div`
   font-weight: 600;
   line-height: 0.875rem;
   color: #a5b7c6;
-`;
-
-const Row = styled.div`
-  display: flex;
-  justify-content: space-between;
-  height: 46px;
 `;
