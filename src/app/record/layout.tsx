@@ -65,20 +65,44 @@ const ProgressBarWrapper = styled.div`
   padding: 0;
 `;
 
+// 추가된 스타일
+const PageHeaderContainer = styled.div`
+  margin-bottom: 25px;
+  text-align: center;
+  margin-top: 30px;
+`;
+
+const PageTitle = styled.h2`
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  text-align: center;
+`;
+
+const PageSubtitle = styled.p`
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: #666;
+  margin-bottom: 30px;
+  text-align: center;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  padding: 16px 24px 30px 24px; /* 하단 패딩 줄임 */
+  padding: 16px 24px 30px 24px;
   background-color: #f0fafd;
   position: fixed;
-  bottom: 5px; /* 버튼 영역을 20px 위로 올림 */
+  bottom: 5px;
   left: 0;
   right: 0;
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  z-index: 50;
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03); /* 그림자 추가 */
+  z-index: 10; // z-index 값을 50에서 10으로 낮춤
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
 
   button {
     width: 356px !important;
@@ -90,7 +114,17 @@ const ButtonContainer = styled.div`
   }
 `;
 
-export default function RecordLayout({ children }: { children: React.ReactNode }) {
+interface RecordLayoutProps {
+  children: React.ReactNode;
+  pageTitle?: string;
+  pageSubtitle?: string;
+}
+
+export default function RecordLayout({
+  children,
+  pageTitle = '오늘 하루 기분은 어땠어?',
+  pageSubtitle = '이제 천천히 돌아보며 선택해줘!',
+}: RecordLayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [recordData, setRecordData] = useRecoilState(emotionRecordState);
@@ -105,6 +139,41 @@ export default function RecordLayout({ children }: { children: React.ReactNode }
   };
 
   const currentStep = getCurrentStep();
+
+  // 현재 단계에 따라 기본 페이지 제목과 부제목 설정
+  const getDefaultTitles = () => {
+    switch (currentStep) {
+      case 1:
+        return {
+          title: '오늘 하루 기분은 어땠어?',
+          subtitle: '이제 천천히 돌아보며 선택해줘!',
+        };
+      case 2:
+        return {
+          title: '오늘 하루 기분은 어땠어?',
+          subtitle: '이제 천천히 돌아보며 작성해줘!',
+        };
+      case 3:
+        return {
+          title: '기록이 완료되었어요',
+          subtitle: '오늘의 감정을 기록했어요',
+        };
+      case 4:
+        return {
+          title: '감정 확인',
+          subtitle: '저장하기 전에 한번 더 확인해주세요',
+        };
+      default:
+        return {
+          title: '오늘 하루 기분은 어땠어?',
+          subtitle: '이제 천천히 돌아보며 선택해줘!',
+        };
+    }
+  };
+
+  const defaultTitles = getDefaultTitles();
+  const displayTitle = pageTitle || defaultTitles.title;
+  const displaySubtitle = pageSubtitle || defaultTitles.subtitle;
 
   const handleBack = () => {
     router.back();
@@ -124,10 +193,16 @@ export default function RecordLayout({ children }: { children: React.ReactNode }
       return !recordData.emotion;
     }
     if (currentStep === 2) {
+      // content 필드가 존재하는지 먼저 확인하고, 유효한 내용이 있는지 확인
+      if (!recordData.content) return true;
+
       // recordData.content가 배열인 경우 길이 확인, 문자열인 경우 내용 확인
-      return Array.isArray(recordData.content)
-        ? recordData.content.length === 0
-        : !recordData.content || recordData.content.trim() === '';
+      if (Array.isArray(recordData.content)) {
+        return recordData.content.length === 0;
+      } else if (typeof recordData.content === 'string') {
+        return recordData.content.trim() === '';
+      }
+      return true; // 다른 타입이면 버튼 비활성화
     }
     return false;
   };
@@ -145,7 +220,14 @@ export default function RecordLayout({ children }: { children: React.ReactNode }
         <ProgressBar steps={5} currentStep={currentStep} />
       </ProgressBarWrapper>
 
-      <ContentContainer>{children}</ContentContainer>
+      <ContentContainer>
+        <PageHeaderContainer>
+          <PageTitle>{displayTitle}</PageTitle>
+          <PageSubtitle>{displaySubtitle}</PageSubtitle>
+        </PageHeaderContainer>
+
+        {children}
+      </ContentContainer>
 
       <ButtonContainer>
         <Button
