@@ -34,19 +34,18 @@ export const PreviewItem = ({ data }: { data: DiaryEntry }) => {
         <p className="content">{data.content}</p>
       </Contents>
       <Action>
-        <button onClick={() => setIsEditToggle(!isEditToggle)}>
-          <EditSVG />
-        </button>
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => setIsEditToggle(!isEditToggle)}>
+            <EditSVG />
+          </button>
+          {isEditToggle && (
+            <EditToggle exit={() => setIsEditToggle(false)} onEdit={() => {}} onDel={() => {}} />
+          )}
+        </div>
+
         <button onClick={() => setIsHeart(!isHeart)}>
           <HeartSVG color={isHeart ? '#00AFD8' : '#E8ECEF'} />
         </button>
-        {isEditToggle && (
-          <EditToggle
-            exit={() => setIsEditToggle(!isEditToggle)}
-            onEdit={() => {}}
-            onDel={() => {}}
-          />
-        )}
       </Action>
     </PreviewItemLayout>
   );
