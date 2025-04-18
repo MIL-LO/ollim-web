@@ -6,29 +6,17 @@ import { moodMap } from '@/constants/moodMap';
 
 const DiaryPreviewList = ({ listData }: { listData: DiaryEntry[] }) => {
   return (
-    <Layout>
-      {listData.map((i) => (
-        <PreviewItem key={i.date} data={i} />
-      ))}
-    </Layout>
+    <DiaryPreviewWrapper>
+      <ScrollableList>
+        {listData.map((i) => (
+          <PreviewItem key={i.id} data={i} />
+        ))}
+      </ScrollableList>
+    </DiaryPreviewWrapper>
   );
 };
+
 export default DiaryPreviewList;
-
-const Layout = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  padding: 16px 0;
-  padding-bottom: 180px;
-
-  width: 100%;
-  min-height: 474px;
-
-  border-radius: 16px 16px 0 0;
-  background-color: #fff;
-  box-shadow: 0 0 4px 2px rgba(0, 175, 216, 0.1);
-`;
 
 export const PreviewItem = ({ data }: { data: DiaryEntry }) => {
   const moodInfo = moodMap[data.mood];
@@ -52,11 +40,62 @@ export const PreviewItem = ({ data }: { data: DiaryEntry }) => {
         <button onClick={() => setIsHeart(!isHeart)}>
           <HeartSVG color={isHeart ? '#00AFD8' : '#E8ECEF'} />
         </button>
-        {isEditToggle && <EditToggle exit={() => setIsEditToggle(!isEditToggle)} />}
+        {isEditToggle && (
+          <EditToggle
+            exit={() => setIsEditToggle(!isEditToggle)}
+            onEdit={() => {}}
+            onDel={() => {}}
+          />
+        )}
       </Action>
     </PreviewItemLayout>
   );
 };
+
+export const EditToggle = ({
+  exit,
+  onEdit,
+  onDel,
+}: {
+  exit: () => void;
+  onEdit: () => void;
+  onDel: () => void;
+}) => {
+  return (
+    <EditToggleLayout>
+      <button id="exitBtn" onClick={exit} style={{ marginRight: '12px' }}>
+        <ExitSVG color="#04192B" />
+      </button>
+      <div className="btnWrap">
+        <button id="editBtn" onClick={onEdit}>
+          수정하기
+        </button>
+        <button id="delBtn" onClick={onDel}>
+          삭제하기
+        </button>
+      </div>
+    </EditToggleLayout>
+  );
+};
+
+const DiaryPreviewWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%; // 전체 뷰 높이 기준
+
+  background-color: #fff;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 0 4px 2px rgba(0, 175, 216, 0.1);
+`;
+
+const ScrollableList = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  padding-bottom: 180px;
+`;
 
 const PreviewItemLayout = styled.div`
   display: flex;
@@ -116,20 +155,6 @@ const Action = styled.div`
   position: relative;
 `;
 
-export const EditToggle = ({ exit }: { exit: () => void }) => {
-  return (
-    <EditToggleLayout>
-      <button id="exitBtn" onClick={exit}>
-        <ExitSVG />
-      </button>
-      <div className="btnWrap">
-        <button id="editBtn">수정하기</button>
-        <button id="delBtn">삭제하기</button>
-      </div>
-    </EditToggleLayout>
-  );
-};
-
 const EditToggleLayout = styled.div`
   position: absolute;
   top: 0;
@@ -140,7 +165,7 @@ const EditToggleLayout = styled.div`
   align-items: end;
   gap: 12px;
 
-  padding: 12px;
+  padding: 12px 0;
   z-index: 1;
 
   width: 120px;
@@ -154,6 +179,12 @@ const EditToggleLayout = styled.div`
     flex-direction: column;
 
     width: 100%;
+
+    button {
+      &:hover {
+        background-color: #f5f9fb;
+      }
+    }
   }
 
   #editBtn,

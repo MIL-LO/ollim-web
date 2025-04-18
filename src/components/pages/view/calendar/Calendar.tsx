@@ -14,7 +14,7 @@ import {
 } from '@/lib/calenderUtils';
 import { diaryMockData, moodMockData } from '../MockData';
 import DiaryPreviewList from '../DiaryPreviewList';
-import DateSelectorModal from './dateSelectorModal/DateSelectorModal';
+import DateSelectorModal from './dateSelectorModal/DateSelector';
 
 const tabs = ['월간', '주간'] as const;
 type Tab = (typeof tabs)[number];
@@ -154,6 +154,8 @@ const Layout = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 8px;
+
+  flex: 1;
 `;
 
 const CalenderTabMenu = styled.div`
@@ -164,6 +166,7 @@ const CalenderTabMenu = styled.div`
 
   padding: 4px;
 
+  min-height: 36px;
   height: 36px;
 
   border-radius: 18px;
