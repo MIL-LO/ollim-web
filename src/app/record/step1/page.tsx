@@ -1,14 +1,12 @@
-// src/app/record/page.tsx
+// src/app/record/step1/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useRecoilState } from 'recoil';
 import Image from 'next/image';
 import { emotionRecordState } from '@/atoms/recordAtoms';
 import {
-  Header,
-  Subtitle,
-  Label,
   EmotionList,
   EmotionOption,
   EmotionContent,
@@ -34,6 +32,7 @@ const emotionOptions = [
 ];
 
 export default function RecordEmotionPage() {
+  const router = useRouter();
   const [recordData, setRecordData] = useRecoilState(emotionRecordState);
   const [selectedEmotion, setSelectedEmotion] = useState<string | null>(recordData.emotion);
 
@@ -52,19 +51,20 @@ export default function RecordEmotionPage() {
     }));
   };
 
+  const handleNext = () => {
+    if (selectedEmotion) {
+      router.push('/record/step2');
+    }
+  };
+
   return (
     <>
-      <Header>
-        <Subtitle>오늘 하루 기분은 어땠어?</Subtitle>
-        <Label>이제 천천히 돌아보며 선택해줘!</Label>
-      </Header>
-
       <EmotionList>
         {emotionOptions.map((emotion) => (
           <EmotionOption
             key={emotion.id}
             selected={selectedEmotion === emotion.id}
-            emotionId={emotion.id} // 감정 ID 추가
+            emotionId={emotion.id}
             onClick={() => handleEmotionSelect(emotion.id)}
           >
             <EmotionContent>
@@ -78,10 +78,7 @@ export default function RecordEmotionPage() {
                   />
                 </EmotionIcon>
               )}
-              <EmotionText
-                selected={selectedEmotion === emotion.id}
-                emotionId={emotion.id} // 감정 ID 추가
-              >
+              <EmotionText selected={selectedEmotion === emotion.id} emotionId={emotion.id}>
                 {emotion.label}
               </EmotionText>
             </EmotionContent>
@@ -89,7 +86,12 @@ export default function RecordEmotionPage() {
         ))}
       </EmotionList>
 
-      <button id="hidden-next-button" style={{ display: 'none' }}>
+      <button
+        id="hidden-next-button"
+        type="button"
+        style={{ display: 'none' }}
+        onClick={handleNext}
+      >
         다음
       </button>
     </>
