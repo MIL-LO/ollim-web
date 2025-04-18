@@ -36,8 +36,9 @@ const MobileContainer = styled.div`
   height: 100vh;
   max-width: 480px;
   position: relative;
-  overflow: hidden;
-  background-color: white;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* ✅ iOS 부드러운 스크롤 */
+  background: linear-gradient(180deg, rgba(240, 250, 253, 1) 0%, rgba(196, 243, 255, 1) 100%);
 
   @media (min-width: 481px) {
     height: 90vh;
