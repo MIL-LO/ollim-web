@@ -22,6 +22,7 @@ const GlobalStyle = createGlobalStyle`
     html, body {
         width: 100%;
         height: 100%;
+        background-color: #f0fafd; /* 전역 배경색 추가 */
     }
 
     body {
@@ -38,6 +39,7 @@ const GlobalStyle = createGlobalStyle`
         height: 844px;
         position: relative;
         overflow: hidden;
+        background-color: #f0fafd; /* 앱 컨테이너에도 배경색 추가 */
     }
 
     /* 화면이 390x844보다 작을 경우, 비율을 유지하면서 축소 */
