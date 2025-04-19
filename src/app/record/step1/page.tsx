@@ -14,8 +14,10 @@ import {
   EmotionText,
 } from '@/components/styles/Record.styles';
 
+// 명확한 타입 정의
 type EmotionId = 'very_happy' | 'happy' | 'neutral' | 'sad' | 'very_sad';
 
+// 타입 안전한 이미지 맵핑
 const moodImageMap: Record<EmotionId, string> = {
   very_happy: 'verygood',
   happy: 'good',
@@ -23,7 +25,9 @@ const moodImageMap: Record<EmotionId, string> = {
   sad: 'bad',
   very_sad: 'toobad',
 };
-const emotionOptions = [
+
+// 명확한 타입을 가진 옵션 배열
+const emotionOptions: Array<{ id: EmotionId; label: string }> = [
   { id: 'very_happy', label: '너무 좋아' },
   { id: 'happy', label: '좋아' },
   { id: 'neutral', label: '그냥그래' },
@@ -34,7 +38,9 @@ const emotionOptions = [
 export default function RecordEmotionPage() {
   const router = useRouter();
   const [recordData, setRecordData] = useRecoilState(emotionRecordState);
-  const [selectedEmotion, setSelectedEmotion] = useState<string | null>(recordData.emotion);
+  const [selectedEmotion, setSelectedEmotion] = useState<EmotionId | null>(
+    recordData.emotion as EmotionId | null
+  );
 
   useEffect(() => {
     setRecordData((prev) => ({
@@ -43,7 +49,7 @@ export default function RecordEmotionPage() {
     }));
   }, [setRecordData]);
 
-  const handleEmotionSelect = (emotionId: string) => {
+  const handleEmotionSelect = (emotionId: EmotionId) => {
     setSelectedEmotion(emotionId);
     setRecordData((prev) => ({
       ...prev,
@@ -68,10 +74,10 @@ export default function RecordEmotionPage() {
             onClick={() => handleEmotionSelect(emotion.id)}
           >
             <EmotionContent>
-              {selectedEmotion === emotion.id && moodImageMap[emotion.id] && (
+              {selectedEmotion === emotion.id && (
                 <EmotionIcon>
                   <Image
-                    src={`/images/${moodImageMap[emotion.id as EmotionId]}.png`}
+                    src={`/images/${moodImageMap[emotion.id]}.png`}
                     alt={emotion.label}
                     width={48}
                     height={48}
