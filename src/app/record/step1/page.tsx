@@ -14,8 +14,7 @@ import {
   EmotionText,
 } from '@/components/styles/Record.styles';
 
-// 이미지 파일명 맵핑
-const moodImageMap = {
+const moodImageMap: Record<string, string> = {
   very_happy: 'verygood',
   happy: 'good',
   neutral: 'soso',
