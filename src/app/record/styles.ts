@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 import Image from 'next/image';
 
-// 색상 맵핑
-const moodColorMap = {
+// 색상 맵핑에 타입 정의 추가
+type MoodColorKey = 'very_happy' | 'happy' | 'neutral' | 'sad' | 'very_sad';
+
+const moodColorMap: Record<MoodColorKey, string> = {
   very_happy: '#F0FAFD',
   happy: '#D2F6FF',
   neutral: '#00AFD8',
@@ -128,7 +130,7 @@ export const ButtonContent = styled.div`
   justify-content: center;
 `;
 
-export const EmotionButton = styled.button<{ selected: boolean; emotionId?: string }>`
+export const EmotionButton = styled.button<{ selected: boolean; emotionId?: MoodColorKey }>`
   width: 268px;
   height: 88px;
   display: flex;
@@ -167,7 +169,7 @@ export const EmotionButton = styled.button<{ selected: boolean; emotionId?: stri
   }
 `;
 
-export const ButtonText = styled.span<{ selected?: boolean; emotionId?: string }>`
+export const ButtonText = styled.span<{ selected?: boolean; emotionId?: MoodColorKey }>`
   font-size: 16px;
   font-weight: ${(props) => (props.selected ? '600' : '500')};
   color: ${(props) => {
