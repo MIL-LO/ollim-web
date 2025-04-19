@@ -101,7 +101,7 @@ const ButtonContainer = styled.div`
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  z-index: 10; // z-index 값을 50에서 10으로 낮춤
+  z-index: 10;
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
 
   button {
@@ -114,17 +114,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-interface RecordLayoutProps {
-  children: React.ReactNode;
-  pageTitle?: string;
-  pageSubtitle?: string;
-}
-
-export default function RecordLayout({
-  children,
-  pageTitle = '오늘 하루 기분은 어땠어?',
-  pageSubtitle = '이제 천천히 돌아보며 선택해줘!',
-}: RecordLayoutProps) {
+export default function RecordLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [recordData, setRecordData] = useRecoilState(emotionRecordState);
@@ -172,8 +162,6 @@ export default function RecordLayout({
   };
 
   const defaultTitles = getDefaultTitles();
-  const displayTitle = pageTitle || defaultTitles.title;
-  const displaySubtitle = pageSubtitle || defaultTitles.subtitle;
 
   const handleBack = () => {
     router.back();
@@ -222,8 +210,8 @@ export default function RecordLayout({
 
       <ContentContainer>
         <PageHeaderContainer>
-          <PageTitle>{displayTitle}</PageTitle>
-          <PageSubtitle>{displaySubtitle}</PageSubtitle>
+          <PageTitle>{defaultTitles.title}</PageTitle>
+          <PageSubtitle>{defaultTitles.subtitle}</PageSubtitle>
         </PageHeaderContainer>
 
         {children}
