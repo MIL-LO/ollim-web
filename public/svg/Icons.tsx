@@ -103,3 +103,143 @@ export const PlusSVG = () => (
     />
   </svg>
 );
+
+export const HomeSvg = () => (
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M18.68 0.506254L0.68 16.4763C0.24 16.8663 0 17.4163 0 17.9963V37.9663C0 39.0863 0.9 39.9963 2 39.9963H13.05C14.16 39.9963 15.05 39.0963 15.05 37.9963V32.4363C15.05 29.6563 17.27 27.4063 20 27.4063C22.73 27.4063 24.95 29.6563 24.95 32.4363V37.9963C24.95 39.1063 25.85 39.9963 26.95 39.9963H38C39.1 39.9963 40 39.0863 40 37.9663V17.9963C40 17.4163 39.75 16.8563 39.32 16.4763L21.32 0.506254C20.57 -0.163746 19.44 -0.163746 18.69 0.506254H18.68Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
+export const View = () => (
+  <svg width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_4_283)">
+      <path
+        d="M38.68 7.03H16.87C16.0637 7.03 15.41 7.68366 15.41 8.49V38.54C15.41 39.3463 16.0637 40 16.87 40H38.68C39.4864 40 40.14 39.3463 40.14 38.54V8.49C40.14 7.68366 39.4864 7.03 38.68 7.03Z"
+        fill="currentColor"
+      />
+      <path
+        d="M15.95 5H24.54C24.91 5 25.2 4.7 25.2 4.34V3.3C25.2 1.48 23.72 0 21.9 0H3.3C1.48 0 0 1.48 0 3.3V30.3C0 32.12 1.48 33.6 3.3 33.6H12.54C12.91 33.6 13.2 33.3 13.2 32.94V7.75C13.2 6.23 14.43 5 15.95 5Z"
+        fill="currentColor"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_4_283">
+        <rect width="40.14" height="40" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const Stats = () => (
+  <svg width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_4_286)">
+      <path
+        d="M10.1599 18.02H2.13989C1.03532 18.02 0.139893 18.9154 0.139893 20.02V38C0.139893 39.1046 1.03532 40 2.13989 40H10.1599C11.2645 40 12.1599 39.1046 12.1599 38V20.02C12.1599 18.9154 11.2645 18.02 10.1599 18.02Z"
+        fill="currentColor"
+      />
+      <path
+        d="M24.1499 9.78H16.1299C15.0253 9.78 14.1299 10.6754 14.1299 11.78V38C14.1299 39.1046 15.0253 40 16.1299 40H24.1499C25.2545 40 26.1499 39.1046 26.1499 38V11.78C26.1499 10.6754 25.2545 9.78 24.1499 9.78Z"
+        fill="currentColor"
+      />
+      <path
+        d="M38.1399 0H30.1199C29.0153 0 28.1199 0.89543 28.1199 2V38C28.1199 39.1046 29.0153 40 30.1199 40H38.1399C39.2444 40 40.1399 39.1046 40.1399 38V2C40.1399 0.89543 39.2444 0 38.1399 0Z"
+        fill="currentColor"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_4_286">
+        <rect width="40" height="40" fill="white" transform="translate(0.139893)" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const Mypage = () => (
+  <svg width="31" height="40" viewBox="0 0 31 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_4_290)">
+      <path
+        d="M15.1399 18.13C23.4199 18.13 30.1399 24.85 30.1399 33.13V38C30.1399 39.11 29.2399 40.01 28.1299 40.01H2.14989C1.03989 40 0.139893 39.1 0.139893 37.99V33.12C0.139893 24.85 6.85989 18.13 15.1399 18.13Z"
+        fill="currentColor"
+      />
+      <path
+        d="M15.1399 16.44C19.6797 16.44 23.3599 12.7598 23.3599 8.22C23.3599 3.68022 19.6797 0 15.1399 0C10.6001 0 6.91992 3.68022 6.91992 8.22C6.91992 12.7598 10.6001 16.44 15.1399 16.44Z"
+        fill="currentColor"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_4_290">
+        <rect width="30" height="40" fill="white" transform="translate(0.139893)" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const Record = () => (
+  <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_262_962)">
+      <path
+        d="M17.8221 14.0893L10.1233 0.655614C9.62328 -0.215283 8.37328 -0.215283 7.87328 0.655614L0.174489 14.0893C-0.325511 14.9602 0.297983 16.0526 1.29798 16.0526H3.67449C4.39136 16.0526 4.97268 16.6382 4.97268 17.3604V20.6923C4.97268 21.4145 5.55401 22.0002 6.27087 22.0002H11.7197C12.4365 22.0002 13.0179 21.4145 13.0179 20.6923V17.3604C13.0179 16.6382 13.5992 16.0526 14.3161 16.0526H16.6926C17.6926 16.0526 18.3161 14.9632 17.8161 14.0893H17.8221Z"
+        fill="white"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_262_962">
+        <rect width="18" height="22" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export const Navbar = () => (
+  <svg
+    width="390"
+    height="120"
+    viewBox="0 0 390 120"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g filter="url(#filter0_d_262_958)">
+      <path
+        d="M255.93 55.2433C243.98 55.2433 232.75 49.306 226.58 39.3553C220.41 29.4047 208.4 22 195 22C181.6 22 169.87 28.9577 163.42 39.3553C156.97 49.753 146.03 55.2433 134.07 55.2433H0V98H390V55.2433H255.93Z"
+        fill="white"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_262_958"
+        x="-22"
+        y="0"
+        width="434"
+        height="120"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feMorphology
+          radius="2"
+          operator="dilate"
+          in="SourceAlpha"
+          result="effect1_dropShadow_262_958"
+        />
+        <feOffset />
+        <feGaussianBlur stdDeviation="10" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.0156863 0 0 0 0 0.0980392 0 0 0 0 0.168627 0 0 0 0.1 0"
+        />
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_262_958" />
+        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_262_958" result="shape" />
+      </filter>
+    </defs>
+  </svg>
+);
