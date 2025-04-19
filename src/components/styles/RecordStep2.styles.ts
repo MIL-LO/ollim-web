@@ -148,3 +148,103 @@ export const DropdownItem = styled.div`
     font-weight: 500;
   }
 `;
+
+// 페이지에서 필요한 추가 스타일
+export const PhotoSection = styled(Section)`
+  align-items: flex-start;
+  margin-left: 24px;
+`;
+
+export const CollectionSection = styled(Section)`
+  align-items: flex-start;
+  margin-left: 24px;
+  width: 90%;
+`;
+
+export const CollectionInput = styled.div`
+  width: 100%;
+  height: 48px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0 16px;
+  font-size: 14px;
+  background-color: white;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: #00afd8;
+  }
+`;
+
+export const BadgeContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+`;
+
+export const Badge = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: #d2f6ff;
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #00afd8;
+  font-weight: 500;
+`;
+
+export const BadgeText = styled.span`
+  margin-right: 8px;
+`;
+
+export const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #00afd8;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const CollectionListWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const CollectionButton = styled.button<{ isSelected: boolean }>`
+  height: 44px;
+  background-color: ${({ isSelected }) => (isSelected ? '#D2F6FF' : 'none')};
+  color: ${({ isSelected }) => (isSelected ? '#00AFD8' : '#A5B7C6')};
+  font-weight: ${({ isSelected }) => (isSelected ? 700 : 500)};
+  border: none;
+  text-align: center;
+  cursor: pointer;
+
+  ${({ isSelected }) =>
+    !isSelected &&
+    `
+    &:hover {
+      background-color: #f5f9fb;
+    }
+  `}
+`;
+
+export const ModalHeader = styled.div`
+  height: 48px;
+  background-color: #d2f6ff;
+  color: #00afd8;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+`;
