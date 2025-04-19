@@ -1,3 +1,4 @@
+// src/styles/RecordStep3.styles.ts
 import styled from 'styled-components';
 
 // 검색 관련 스타일
