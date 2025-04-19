@@ -70,7 +70,7 @@ export default function Step1() {
   ];
 
   // 입력 형식 가이드 (예: YYYY-MM-DD)
-  const handleBirthdateChange = (e) => {
+  const handleBirthdateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBirthdate(e.target.value);
   };
 
