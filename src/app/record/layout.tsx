@@ -203,11 +203,9 @@ export default function RecordLayout({ children }: { children: React.ReactNode }
         </BackButton>
         <Title>감정 기록하기</Title>
       </HeaderContainer>
-
       <ProgressBarWrapper>
         <ProgressBar steps={5} currentStep={currentStep} />
       </ProgressBarWrapper>
-
       <ContentContainer>
         <PageHeaderContainer>
           <PageTitle>{defaultTitles.title}</PageTitle>
@@ -216,7 +214,6 @@ export default function RecordLayout({ children }: { children: React.ReactNode }
 
         {children}
       </ContentContainer>
-
       <ButtonContainer>
         <Button
           variant="primary"
@@ -224,7 +221,6 @@ export default function RecordLayout({ children }: { children: React.ReactNode }
           fullWidth={false}
           onClick={handleNext}
           disabled={isNextButtonDisabled()}
-          style={{ width: '356px', height: '44px' }}
         >
           다음
         </Button>
