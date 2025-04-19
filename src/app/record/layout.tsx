@@ -121,6 +121,8 @@ export default function RecordLayout({ children }: { children: React.ReactNode }
 
   // 경로에 따라 현재 단계 결정
   const getCurrentStep = () => {
+    if (!pathname) return 1; // pathname이 null인 경우 기본값 반환
+
     if (pathname.includes('/step1')) return 1;
     if (pathname.includes('/step2')) return 2;
     if (pathname.includes('/step3')) return 3;

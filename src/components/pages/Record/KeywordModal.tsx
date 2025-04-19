@@ -14,20 +14,23 @@ interface KeywordModalProps {
   onToggleKeyword: (keyword: string) => void;
 }
 
+// 탭 타입 정의
+type TabType = '행복한' | '즐거운' | '분노' | '슬픔';
+
 const KeywordModal: React.FC<KeywordModalProps> = ({
   isOpen,
   onClose,
   selectedKeywords,
   onToggleKeyword,
 }) => {
-  const [activeTab, setActiveTab] = useState('즐거운');
+  const [activeTab, setActiveTab] = useState<TabType>('즐거운');
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
 
   // 탭 데이터
-  const tabs = ['행복한', '즐거운', '분노', '슬픔'];
+  const tabs: TabType[] = ['행복한', '즐거운', '분노', '슬픔'];
 
   // 각 탭별 키워드 데이터
-  const keywordsByTab = {
+  const keywordsByTab: Record<TabType, string[]> = {
     행복한: ['행복한', '웃음', '즐거움', '감사', '설렘'],
     즐거운: ['기쁨', '즐거운', '신남', '행복', '만족'],
     분노: ['화남', '분노', '짜증', '불만', '답답함'],
