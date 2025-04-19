@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
+// 무드 타입 정의
+type MoodType = 'verygood' | 'good' | 'soso' | 'bad' | 'toobad';
+
 // 색상 맵핑
-const moodColorMap = {
+const moodColorMap: Record<MoodType, string> = {
   verygood: '#F0FAFD',
   good: '#D2F6FF',
   soso: '#00AFD8',
@@ -15,7 +18,7 @@ export const ImageWrapper = styled.div`
   align-items: center;
 `;
 
-export const SelectButtonContainer = styled.button<{ selected?: boolean; mood?: string }>`
+export const SelectButtonContainer = styled.button<{ selected?: boolean; mood?: MoodType }>`
   width: 268px;
   height: 88px;
   display: flex;
@@ -49,7 +52,7 @@ export const SelectButtonContainer = styled.button<{ selected?: boolean; mood?: 
   }
 `;
 
-export const ButtonText = styled.span<{ selected?: boolean; mood?: string }>`
+export const ButtonText = styled.span<{ selected?: boolean; mood?: MoodType }>`
   font-size: 16px;
   font-weight: ${(props) => (props.selected ? '600' : '500')};
   color: ${(props) => {
