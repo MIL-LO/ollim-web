@@ -8,12 +8,10 @@ import { LoginContainer, ButtonsWrapper, BottomIndicator } from './styles';
 
 export default function LoginPage() {
   return (
-    <MobileLayout fullScreen={true}>
-      <LoginContainer>
-        <ButtonsWrapper>
-          <LoginButtons />
-        </ButtonsWrapper>
-      </LoginContainer>
-    </MobileLayout>
+    <LoginContainer>
+      <ButtonsWrapper>
+        <LoginButtons />
+      </ButtonsWrapper>
+    </LoginContainer>
   );
 }
