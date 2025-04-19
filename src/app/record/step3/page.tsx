@@ -9,21 +9,6 @@ import { emotionRecordState } from '@/atoms/recordAtoms';
 import { Button } from '@/components/common';
 import styled from 'styled-components';
 
-const CompleteButtonContainer = styled.div`
-  position: fixed;
-  bottom: 5px;
-  left: 0;
-  right: 0;
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  z-index: 99999;
-  display: flex;
-  justify-content: center;
-  padding: 16px 24px 30px 24px;
-  background-color: white;
-`;
-
 // 컴포넌트 import
 import KeywordModal from '../../../components/pages/Record/KeywordModal';
 import {
@@ -77,20 +62,6 @@ export default function RecordKeywordsPage() {
     '외로움',
   ];
 
-  // page.tsx에 추가
-  useEffect(() => {
-    const layoutButton =
-      document.querySelector('.ButtonContainer') ||
-      document.querySelector('div[style*="z-index: 10"]');
-    if (layoutButton && layoutButton instanceof HTMLElement) {
-      if (isModalOpen) {
-        layoutButton.style.visibility = 'hidden'; // display: none 대신 visibility 사용
-      } else {
-        layoutButton.style.visibility = 'visible';
-      }
-    }
-  }, [isModalOpen]);
-
   // 검색어에 따라 결과 필터링
   useEffect(() => {
     if (!searchText) {
@@ -131,18 +102,6 @@ export default function RecordKeywordsPage() {
       currentStep: 3,
     }));
   }, [setRecordData]);
-
-  // 모달이 열렸을 때 다음 버튼 숨기기
-  useEffect(() => {
-    const buttonContainer = document.querySelector('div[style*="z-index: 10"]') as HTMLElement;
-    if (buttonContainer) {
-      if (isModalOpen) {
-        buttonContainer.style.display = 'none';
-      } else {
-        buttonContainer.style.display = 'flex';
-      }
-    }
-  }, [isModalOpen]);
 
   // 검색어 입력 핸들러
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -276,19 +235,6 @@ export default function RecordKeywordsPage() {
         selectedKeywords={selectedKeywords}
         onToggleKeyword={handleToggleKeyword}
       />
-      {isModalOpen && (
-        <CompleteButtonContainer>
-          <Button
-            variant="primary"
-            size="large"
-            fullWidth={false}
-            onClick={() => setIsModalOpen(false)}
-            style={{ width: '356px', height: '44px' }}
-          >
-            완료
-          </Button>
-        </CompleteButtonContainer>
-      )}
 
       {/* 숨겨진 다음 버튼 */}
       <button

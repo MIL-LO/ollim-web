@@ -145,13 +145,8 @@ export default function RecordLayout({ children }: { children: React.ReactNode }
         };
       case 3:
         return {
-          title: '기록이 완료되었어요',
-          subtitle: '오늘의 감정을 기록했어요',
-        };
-      case 4:
-        return {
-          title: '감정 확인',
-          subtitle: '저장하기 전에 한번 더 확인해주세요',
+          title: '오늘 하루 느꼈던 감정들은 무엇이 있나요?',
+          subtitle: '하루 전체를 돌이켜보며 선택해주세요!',
         };
       default:
         return {
