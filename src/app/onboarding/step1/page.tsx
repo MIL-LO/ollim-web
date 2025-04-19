@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { onboardingDataState, currentStepState } from '@/atoms/onboardingAtoms';
-import { Button, Input, RadioGroup, DatePicker } from '@/components/common';
+import { Button, Input, RadioGroup } from '@/components/common';
 import {
   FormSection,
   Label,
@@ -69,6 +69,11 @@ export default function Step1() {
     { value: 'other', label: '기타' },
   ];
 
+  // 입력 형식 가이드 (예: YYYY-MM-DD)
+  const handleBirthdateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBirthdate(e.target.value);
+  };
+
   // 다음 버튼 활성화 여부
   const isNextDisabled = !nickname.trim() || !gender || !birthdate;
 
@@ -102,7 +107,13 @@ export default function Step1() {
 
       <FormSection>
         <Label>생년월일을 입력해주세요</Label>
-        <DatePicker value={birthdate} onChange={setBirthdate} />
+        <Input
+          type="text"
+          value={birthdate}
+          onChange={handleBirthdateChange}
+          placeholder="YYYY-MM-DD"
+          fullWidth
+        />
       </FormSection>
 
       <ButtonContainer>
