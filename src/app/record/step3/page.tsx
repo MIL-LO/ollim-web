@@ -148,7 +148,7 @@ export default function RecordKeywordsPage() {
 
   // 다음 단계로 이동
   const handleNext = useCallback(() => {
-    router.push('/record/step4');
+    router.push('/record-complete');
   }, [router]);
 
   // 감정 어휘 탐색 모달 열기
