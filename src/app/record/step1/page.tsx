@@ -14,14 +14,15 @@ import {
   EmotionText,
 } from '@/components/styles/Record.styles';
 
-const moodImageMap: Record<string, string> = {
+type EmotionId = 'very_happy' | 'happy' | 'neutral' | 'sad' | 'very_sad';
+
+const moodImageMap: Record<EmotionId, string> = {
   very_happy: 'verygood',
   happy: 'good',
   neutral: 'soso',
   sad: 'bad',
   very_sad: 'toobad',
 };
-
 const emotionOptions = [
   { id: 'very_happy', label: '너무 좋아' },
   { id: 'happy', label: '좋아' },
@@ -70,7 +71,7 @@ export default function RecordEmotionPage() {
               {selectedEmotion === emotion.id && moodImageMap[emotion.id] && (
                 <EmotionIcon>
                   <Image
-                    src={`/images/${moodImageMap[emotion.id]}.png`}
+                    src={`/images/${moodImageMap[emotion.id as EmotionId]}.png`}
                     alt={emotion.label}
                     width={48}
                     height={48}
