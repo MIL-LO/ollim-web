@@ -3,7 +3,6 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { SplashContainer } from './styles';
 
 export default function SplashPage() {
   const router = useRouter();
@@ -17,5 +16,5 @@ export default function SplashPage() {
     return () => clearTimeout(timer);
   }, [router]);
 
-  return <SplashContainer>{/* 스플래시 화면 내용 */}</SplashContainer>;
+  return <></>;
 }
