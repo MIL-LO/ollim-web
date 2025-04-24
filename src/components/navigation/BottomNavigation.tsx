@@ -6,6 +6,7 @@ import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { HomeSVG, ViewSVG, RecordSVG, StatsSVG, MypageSVG } from '../../../public/svg/Icons';
+import { media } from '@/styles/mediaQuery';
 
 interface MenuConfig {
   path: string;
@@ -16,8 +17,8 @@ interface MenuConfig {
 
 const menuItems: MenuConfig[] = [
   { path: '/home', label: '홈', icon: <HomeSVG /> },
-  { path: '/view', label: '모아보기', icon: <ViewSVG /> },
-  { path: '/record', label: '감정 기록하기', icon: <RecordSVG />, isCenter: true },
+  { path: '/diary/calendar', label: '모아보기', icon: <ViewSVG /> },
+  { path: '/diary/new', label: '감정 기록하기', icon: <RecordSVG />, isCenter: true },
   { path: '/stats', label: '통계', icon: <StatsSVG /> },
   { path: '/mypage', label: '마이페이지', icon: <MypageSVG /> },
 ];
@@ -49,6 +50,7 @@ const BottomNavigation = () => {
           );
         })}
       </MenuContainer>
+      <BottomNavLine />
     </Layout>
   );
 };
@@ -61,9 +63,16 @@ const Layout = styled.div`
   left: 0;
   z-index: 100;
 
+  display: flex;
+  flex-direction: column;
+
   width: 100%;
 
   background-color: #fff;
+
+  ${media.pc} {
+    position: absolute;
+  }
 `;
 
 const RoundImage = styled.img`
@@ -97,7 +106,7 @@ const MenuSlot = styled.div<{ $isCenter?: boolean }>`
   flex: 1;
   padding-bottom: 34px;
 
-  min-width: 20%;
+  min-width: ${({ $isCenter }) => ($isCenter ? '170px' : 'auto')};
 `;
 
 const MenuItem = styled.div<{ $isActive: boolean; $isCenter?: boolean }>`
@@ -136,4 +145,23 @@ const Label = styled.span<{ $isActive: boolean }>`
   font-weight: ${({ $isActive }) => ($isActive ? 500 : 400)};
   text-align: center;
   white-space: nowrap;
+`;
+
+const BottomNavLine = styled.div`
+  display: none;
+
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 125px;
+  height: 4px;
+
+  border-radius: 2px;
+  background-color: #32302e;
+
+  ${media.pc} {
+    display: flex;
+  }
 `;

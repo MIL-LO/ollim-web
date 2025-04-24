@@ -2,17 +2,25 @@
 
 import styled from 'styled-components';
 import { LeftArrowSVG, SearchSVG } from '../../../public/svg/Icons';
+import { ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 
-const TopNavigation = () => {
+interface Props {
+  title: string;
+  rightIcon?: ReactNode;
+  onClickRightIcon?: () => void;
+}
+
+const TopNavigation = ({ title, rightIcon, onClickRightIcon }: Props) => {
+  const router = useRouter();
+
   return (
     <Layout>
-      <button>
+      <button onClick={() => router.back()}>
         <LeftArrowSVG />
       </button>
-      <Title>감정 모아보기</Title>
-      <button>
-        <SearchSVG />
-      </button>
+      <Title>{title}</Title>
+      <button onClick={onClickRightIcon}>{rightIcon}</button>
     </Layout>
   );
 };
