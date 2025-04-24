@@ -15,7 +15,6 @@ type DiaryType = 'edit' | 'view';
 export const DiarySection = ({ type }: { type: DiaryType }) => {
   return (
     <Layout>
-      <Input label="제목" required={true} color="#04192B" value={'sdfs'} onChange={() => {}} />
       <MoodEmotionForm type={type} />
       <TextForm type={type} />
       <PhotoForm type={type} />

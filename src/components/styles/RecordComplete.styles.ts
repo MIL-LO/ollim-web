@@ -14,7 +14,6 @@ export const Container = styled.div`
   flex-direction: column;
   min-height: 100vh;
   height: 100%;
-  background-color: #f0fafd;
   padding: 0 24px;
   max-width: 480px;
   margin: 0 auto;
