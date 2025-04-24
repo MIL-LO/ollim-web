@@ -14,15 +14,22 @@ const GlobalStyle = createGlobalStyle`
         /*스크롤숨김*/
         scrollbar-width: none; //Firefox
         -ms-overflow-style: none; //IE, Edge
+
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+
     }
+
+    /* Chrome, Safari, Opera */
     *::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, Opera */
+        display: none; 
     }
 
     html, body {
         width: 100%;
         height: 100%;
-        background-color: #f0fafd; /* 전역 배경색 추가 */
+        background: linear-gradient(180deg, #f0fafd 0%, #c4f3ff 100%);
     }
 
     body {
@@ -31,28 +38,6 @@ const GlobalStyle = createGlobalStyle`
         display: flex;
         justify-content: center;
         align-items: center;
-    }
-
-    /* 앱 컨테이너 - 항상 390x844 크기 유지 */
-    .app-container {
-        width: 390px;
-        height: 844px;
-        position: relative;
-        overflow: hidden;
-        background-color: #f0fafd; /* 앱 컨테이너에도 배경색 추가 */
-    }
-
-    /* 화면이 390x844보다 작을 경우, 비율을 유지하면서 축소 */
-    @media (max-width: 390px), (max-height: 844px) {
-        .app-container {
-            width: 100vw;
-            height: 100vh;
-            transform-origin: center;
-            transform: scale(min(
-                    1,
-                    min(100vw / 390, 100vh / 844)
-            ));
-        }
     }
 
     a {
