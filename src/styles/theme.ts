@@ -1,41 +1,50 @@
+// src/styles/theme.ts
+
+// ============================================
+// - 색상 디자인 토큰 정의
+// - 테마 설정 파일 (임시: Light/Dark 모드 | 현재는 테마 없음)
+// - styled-components의 ThemeProvider에서 사용됨
+// ============================================
+
 'use client';
 
-const theme = {
+// Light 모드 테마 정의
+const lightTheme = {
   colors: {
-    primary: '#0070f3',
-    secondary: '#1f2937',
-    background: '#ffffff',
-    text: '#333333',
-    lightGray: '#f3f4f6',
-    gray: '#9ca3af',
-    darkGray: '#4b5563',
-    error: '#ef4444',
-    success: '#10b981',
-    warning: '#f59e0b',
-  },
-  fonts: {
-    body: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif',
-    heading:
-      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif',
-  },
-  fontSizes: {
-    xs: '0.75rem',
-    sm: '0.875rem',
-    md: '1rem',
-    lg: '1.125rem',
-    xl: '1.25rem',
-    '2xl': '1.5rem',
-    '3xl': '1.875rem',
-    '4xl': '2.25rem',
-    '5xl': '3rem',
-  },
-  breakpoints: {
-    sm: '640px',
-    md: '768px',
-    lg: '1024px',
-    xl: '1280px',
-    '2xl': '1536px',
+    BG1_Main: '#00AFD8',
+    BG2: '#D2F6FF',
+    BG3: '#F0FAFD',
+    BG4: '#146E96',
+    BG5: '#254A7E',
+    BG6_Gray: '#E8ECEF',
+
+    TXT1_Main: '#04192B',
+    TXT2: '#103151',
+    TXT3: '#FFF',
+    TXT4_Gray: '#A5B7C6',
   },
 };
 
-export default theme;
+// Dark 모드 테마 정의
+const darkTheme = {
+  colors: {
+    BG1_Main: '#00AFD8',
+    BG2: '#D2F6FF',
+    BG3: '#F0FAFD',
+    BG4: '#146E96',
+    BG5: '#254A7E',
+    // BG6_Gray: '#E8ECEF',
+
+    TXT1_Main: '#04192B',
+    TXT2: '#103151',
+    TXT3: '#FFF',
+    // TXT4_Gray: '#A5B7C6',
+  },
+};
+
+export const theme = {
+  lightMode: lightTheme,
+  darkMode: darkTheme,
+};
+
+export type Theme = typeof lightTheme;
