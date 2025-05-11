@@ -14,11 +14,11 @@ export default function HomePage() {
         <Image src="/images/mascot.png" alt="Mascot" width={250} height={250} priority />
 
         {/* 물방울 효과 */}
-        <Bubble size="8px" left="40%" delay="0s" duration="4s" />
-        <Bubble size="12px" left="45%" delay="1s" duration="6s" />
-        <Bubble size="6px" left="55%" delay="2s" duration="5s" />
-        <Bubble size="10px" left="60%" delay="0.5s" duration="7s" />
-        <Bubble size="7px" left="65%" delay="1.5s" duration="4.5s" />
+        <Bubble $size="8px" $left="40%" $delay="0s" $duration="4s" />
+        <Bubble $size="12px" $left="45%" $delay="1s" $duration="6s" />
+        <Bubble $size="6px" $left="55%" $delay="2s" $duration="5s" />
+        <Bubble $size="10px" $left="60%" $delay="0.5s" $duration="7s" />
+        <Bubble $size="7px" $left="65%" $delay="1.5s" $duration="4.5s" />
       </ImageContainer>
 
       {/* 물결 효과 */}
@@ -104,15 +104,15 @@ const WaveContainer = styled.div`
   opacity: 0.7;
 `;
 
-const Bubble = styled.div<{ size: string; left: string; delay: string; duration: string }>`
+const Bubble = styled.div<{ $size: string; $left: string; $delay: string; $duration: string }>`
   position: absolute;
-  width: ${(props) => props.size};
-  height: ${(props) => props.size};
+  width: ${(props) => props.$size};
+  height: ${(props) => props.$size};
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.7);
-  left: ${(props) => props.left};
+  left: ${(props) => props.$left};
   bottom: 190px; // 위치 조정 가능
-  animation: ${bubbleRise} ${(props) => props.duration} ease-in-out infinite;
-  animation-delay: ${(props) => props.delay};
+  animation: ${bubbleRise} ${(props) => props.$duration} ease-in-out infinite;
+  animation-delay: ${(props) => props.$delay};
   z-index: 3;
 `;

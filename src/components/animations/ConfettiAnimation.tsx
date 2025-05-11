@@ -1,4 +1,6 @@
 // src/components/animations/ConfettiAnimation.tsx
+// 축하 꽃가루 애니메이션
+
 'use client';
 
 import { useEffect, useState } from 'react';

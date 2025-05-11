@@ -85,6 +85,7 @@ const DiaryPreviewWrapper = styled.div`
 
   width: 100%;
   height: 100%; // 전체 뷰 높이 기준
+  min-height: 200px;
 
   background-color: #fff;
   border-radius: 16px 16px 0 0;

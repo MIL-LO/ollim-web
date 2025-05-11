@@ -99,12 +99,14 @@ export default function Step3() {
       </FormSection>
 
       <ButtonContainer>
-        <Button variant="outline" onClick={handleSkip} fullWidth>
-          건너뛰기
-        </Button>
-        <Button variant="primary" onClick={handleNext} fullWidth disabled={isNextDisabled}>
-          완료
-        </Button>
+        <Button title="건너뛰기" variant="outline" onClick={handleSkip} fullWidth />
+        <Button
+          title="완료"
+          variant="primary"
+          onClick={handleNext}
+          fullWidth
+          disabled={isNextDisabled}
+        />
       </ButtonContainer>
     </>
   );

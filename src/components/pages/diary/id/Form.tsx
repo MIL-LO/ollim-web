@@ -8,6 +8,7 @@ import {
 } from '../../../../../public/svg/Icons';
 import { CameraButton } from '@/components/common/Button/CameraButton';
 import { Input } from '@/components/common';
+import PageButton from '@/components/common/Button/_PageButton';
 
 type DiaryType = 'edit' | 'view';
 
@@ -15,6 +16,7 @@ type DiaryType = 'edit' | 'view';
 export const DiarySection = ({ type }: { type: DiaryType }) => {
   return (
     <Layout>
+      <PageButton title="버튼명" variant="recommend" type="reset" size="xsmall" />
       <MoodEmotionForm type={type} />
       <TextForm type={type} />
       <PhotoForm type={type} />

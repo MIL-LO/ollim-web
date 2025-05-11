@@ -3,23 +3,22 @@
 
 import styled from 'styled-components';
 import { ExitSVG } from '../../../../public/svg/Icons';
-import Button from '../Button';
+import PageButton from '../Button/PageButton';
 import { ReactElement } from 'react';
 import ModalWrapper from './ModalWrapper';
 
 interface Props {
   onClose: () => void;
-  onYes: () => void;
   title: string;
-  yesBtnName: string;
+  yesBtn: ReactElement;
 
   onNo?: () => void;
-  descript?: string;
+  descript?: string | ReactElement;
   children?: ReactElement;
-  noBtnName?: string;
+  noBtn?: ReactElement;
 }
 /**단일버튼 모달*/
-export const ConfirmModal = ({ onClose, onYes, title, yesBtnName, children }: Props) => {
+export const ConfirmModal = ({ onClose, title, descript, yesBtn, noBtn, children }: Props) => {
   return (
     <ModalWrapper onClose={onClose}>
       <Layout>
@@ -30,16 +29,19 @@ export const ConfirmModal = ({ onClose, onYes, title, yesBtnName, children }: Pr
         </ExitBtn>
         <Container>
           <Title>{title}</Title>
+          <Discript>{descript}</Discript>
           {children}
-          <Button>{yesBtnName}</Button>
+          <ButtonSet>
+            {noBtn && noBtn}
+            {yesBtn}
+          </ButtonSet>
         </Container>
       </Layout>
     </ModalWrapper>
   );
 };
-
 /**Alert형 버튼 모달 */
-export const AlertModal = ({ onClose, onYes, onNo, title, descript }: Props) => {
+export const AlertModal = ({ onClose, noBtn, yesBtn, title, descript }: Props) => {
   return (
     <ModalWrapper onClose={onClose}>
       <Layout>
@@ -54,8 +56,8 @@ export const AlertModal = ({ onClose, onYes, onNo, title, descript }: Props) => 
             <p className="description">{descript}</p>
           </Title>
           <ButtonSet>
-            <Button onClick={onNo}>{'취소할래요'}</Button>
-            <Button onClick={onYes}>{'삭제할래요'}</Button>
+            {noBtn && noBtn}
+            {yesBtn}
           </ButtonSet>
         </Container>
       </Layout>
@@ -110,6 +112,14 @@ const Title = styled.div`
     font-weight: 400;
     color: #a5b7c6;
   }
+`;
+
+const Discript = styled.div`
+  margin: auto;
+  color: ${({ theme }) => theme.colors.TXT4_Gray};
+  font-weight: 400;
+  font-size: 12px;
+  text-align: center;
 `;
 
 const ButtonSet = styled.div`

@@ -23,6 +23,7 @@ import {
 } from '@/components/styles/RecordStep2.styles';
 import { BottomSheetModal } from '@/components/pages/diary/BottomSheetModal';
 import styled from 'styled-components';
+import PageButton from '@/components/common/Button/PageButton';
 
 interface CollectionTextProps {
   value: string;
@@ -100,7 +101,7 @@ export default function Step2() {
   }, [handleNext]);
 
   return (
-    <>
+    <Layout>
       <Section>
         <TextArea value={content} onChange={handleContentChange} placeholder="작성해주세요." />
       </Section>
@@ -160,12 +161,12 @@ export default function Step2() {
       )}
 
       {/* 숨겨진 다음 버튼 */}
-      <button
-        id="hidden-next-button"
-        type="button"
-        style={{ display: 'none' }}
-        onClick={handleNext}
-      />
-    </>
+      <PageButton title={'다음'} onClick={handleNext}></PageButton>
+    </Layout>
   );
 }
+const Layout = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+`;

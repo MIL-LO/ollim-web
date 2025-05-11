@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { IoClose } from 'react-icons/io5';
-import Button from '../../../common/Button';
+import Button from '../../../common/Button/_PageButton';
 import styled from 'styled-components';
 
 interface KeywordModalProps {

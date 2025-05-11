@@ -47,7 +47,7 @@ const Input: React.FC<InputProps> = ({
       )}
       <InputGroup>
         <InputWrap $withButton={withRecommendButton}>
-          <SearchSVG color="#A5B7C6" />
+          {/* <SearchSVG color="#A5B7C6" /> */}
           <StyledInput
             $hasValue={value.length > 0}
             $color={color}

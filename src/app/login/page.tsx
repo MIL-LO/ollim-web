@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import LoginButtons from '@/components/auth/LoginButtons';
+import LoginButtons from '@/components/pages/auth/LoginButtons';
 import styled from 'styled-components';
 
 export default function LoginPage() {

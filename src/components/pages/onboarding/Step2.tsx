@@ -123,12 +123,14 @@ export default function Step2() {
       </FormSection>
 
       <ButtonContainer>
-        <Button variant="outline" onClick={handleSkip} fullWidth>
-          건너뛰기
-        </Button>
-        <Button variant="primary" onClick={handleNext} fullWidth disabled={isNextDisabled}>
-          다음
-        </Button>
+        <Button title="건너뛰기" variant="secondary" onClick={handleSkip} fullWidth />
+        <Button
+          title="다음"
+          variant="primary"
+          onClick={handleNext}
+          fullWidth
+          disabled={isNextDisabled}
+        />
       </ButtonContainer>
     </>
   );

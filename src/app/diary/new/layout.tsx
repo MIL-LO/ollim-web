@@ -7,13 +7,14 @@ import ProgressBar from '@/components/common/ProgressBar';
 import { Button } from '@/components/common';
 import { useRecoilState } from 'recoil';
 import { emotionRecordState } from '@/atoms/recordAtoms';
+import PageButton from '@/components/common/Button/PageButton';
 
 // 레이아웃 스타일 컴포넌트
 const LayoutContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 480px;
+  width: 100%;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -168,20 +169,8 @@ export default function RecordLayout({ children }: { children: React.ReactNode }
           <PageTitle>{defaultTitles.title}</PageTitle>
           <PageSubtitle>{defaultTitles.subtitle}</PageSubtitle>
         </PageHeaderContainer>
-
         {children}
       </ContentContainer>
-      <ButtonContainer>
-        <Button
-          variant="primary"
-          size="large"
-          fullWidth={false}
-          onClick={handleNext}
-          disabled={isNextButtonDisabled()}
-        >
-          다음
-        </Button>
-      </ButtonContainer>
     </LayoutContainer>
   );
 }

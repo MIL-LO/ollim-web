@@ -13,6 +13,8 @@ import {
   EmotionIcon,
   EmotionText,
 } from '@/components/styles/Record.styles';
+import PageButton from '@/components/common/Button/PageButton';
+import styled from 'styled-components';
 
 // 명확한 타입 정의
 type EmotionId = 'very_happy' | 'happy' | 'neutral' | 'sad' | 'very_sad';
@@ -64,7 +66,7 @@ export default function Step1() {
   };
 
   return (
-    <>
+    <Layout>
       <EmotionList>
         {emotionOptions.map((emotion) => (
           <EmotionOption
@@ -91,15 +93,25 @@ export default function Step1() {
           </EmotionOption>
         ))}
       </EmotionList>
-
-      <button
-        id="hidden-next-button"
-        type="button"
-        style={{ display: 'none' }}
-        onClick={handleNext}
-      >
-        다음
-      </button>
-    </>
+      <ButtonWrap>
+        <PageButton
+          title={'다음'}
+          onClick={handleNext}
+          disabled={selectedEmotion !== null ? false : true}
+        ></PageButton>
+      </ButtonWrap>
+    </Layout>
   );
 }
+const Layout = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+`;
+
+const ButtonWrap = styled.div`
+  position: absolute;
+  bottom: -40px;
+  transform: translateY(100%);
+  width: 100%;
+`;

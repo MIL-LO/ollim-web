@@ -17,6 +17,7 @@ const lightTheme = {
     BG4: '#146E96',
     BG5: '#254A7E',
     BG6_Gray: '#E8ECEF',
+    BG7_Disable: '#C0EBF5',
 
     TXT1_Main: '#04192B',
     TXT2: '#103151',

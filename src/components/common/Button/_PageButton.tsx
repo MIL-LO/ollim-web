@@ -1,9 +1,49 @@
+// components/common/Button/PageButton.tsx
+// 페이지버튼, 모달버튼, 로그인버튼
+
+'use client';
+
+import React from 'react';
 import styled, { css } from 'styled-components';
-import { ButtonProps } from './index';
+
+interface Props {
+  title: string;
+  variant?: 'primary' | 'secondary' | 'outline' | 'recommend'; //버튼스타일
+  size?: 'xsmall' | 'small' | 'medium' | 'large'; //버튼크기 = 버튼사용처
+  fullWidth?: boolean;
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+}
+
+const PageButton = ({
+  title,
+  variant = 'primary',
+  size = 'medium',
+  fullWidth = false,
+  onClick,
+  disabled = false,
+  type = 'button',
+}: Props) => {
+  return (
+    <StyledButton
+      variant={variant}
+      size={size}
+      $fullWidth={fullWidth}
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+    >
+      {title}
+    </StyledButton>
+  );
+};
+
+export default PageButton;
 
 type StyledButtonProps = {
-  variant: ButtonProps['variant'];
-  size: ButtonProps['size'];
+  variant: Props['variant'];
+  size: Props['size'];
   $fullWidth: boolean;
 };
 

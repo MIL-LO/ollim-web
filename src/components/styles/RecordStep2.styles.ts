@@ -17,7 +17,7 @@ export const SubText = styled.p`
 `;
 
 export const TextArea = styled.textarea`
-  width: 359px;
+  width: 100%;
   height: 284px;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
@@ -152,13 +152,11 @@ export const DropdownItem = styled.div`
 // 페이지에서 필요한 추가 스타일
 export const PhotoSection = styled(Section)`
   align-items: flex-start;
-  margin-left: 24px;
 `;
 
 export const CollectionSection = styled(Section)`
   align-items: flex-start;
-  margin-left: 24px;
-  width: 90%;
+  width: 100%;
 `;
 
 export const CollectionInput = styled.div`

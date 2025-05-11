@@ -118,7 +118,6 @@ export const InputRow = styled.div`
   gap: 8px;
   width: 100%;
   max-width: 358px;
-  margin: 0 auto; /* 중앙 정렬 */
 
   @media (max-width: 480px) {
     gap: 6px;
