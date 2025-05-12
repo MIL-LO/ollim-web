@@ -55,6 +55,7 @@ const Modal = styled.div`
   gap: 13px;
 
   padding-bottom: 34px;
+  padding-bottom: 130px;
   z-index: 2;
 
   width: 100%;

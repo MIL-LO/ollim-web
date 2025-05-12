@@ -53,6 +53,22 @@ export const diaryMockData: DiaryEntry[] = [
     collection_id: '3',
     liked: false,
   },
+  {
+    id: '6',
+    date: '2025-05-12',
+    mood: 'moodLevel2',
+    content: '괜찮았던 하루 :)',
+    collection_id: '3',
+    liked: false,
+  },
+  {
+    id: '7',
+    date: '2025-05-09',
+    mood: 'moodLevel5',
+    content: '꽤나 빡센 하루 :)',
+    collection_id: '2',
+    liked: false,
+  },
 ];
 
 // 캘린더용 데이터 변환

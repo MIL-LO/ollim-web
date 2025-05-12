@@ -63,11 +63,11 @@ const Input: React.FC<InputProps> = ({
         </InputWrap>
 
         {/* <SearchSVG /> */}
-        {withRecommendButton && (
+        {/* {withRecommendButton && (
           <Button variant="recommend" size="xsmall" onClick={onRecommendClick}>
             추천받기
           </Button>
-        )}
+        )} */}
       </InputGroup>
     </InputContainer>
   );
