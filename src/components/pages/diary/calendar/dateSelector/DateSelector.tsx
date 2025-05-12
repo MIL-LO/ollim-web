@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { BelowTriangleSVG } from '../../../../../../../public/svg/Icons';
+import { BelowTriangleSVG } from '../../../../../../public/svg/Icons';
 import { YearStep } from './YearStep';
 import { MonthStep } from './MonthStep';
 import { WeekStep } from './WeekStep';
-import { BottomSheetModal } from '../../../BottomSheetModal';
+import { BottomSheetModal } from '../../BottomSheetModal';
 
 interface Props {
   mode: '월간' | '주간';

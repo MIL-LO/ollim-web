@@ -12,8 +12,8 @@ import {
   getWeekCount,
   getWeekOfMonth,
 } from '@/lib/calenderUtils';
-import { diaryMockData, moodMockData } from '../../MockData';
-import DiaryPreviewList from '../../DiaryPreviewList';
+import { diaryMockData, moodMockData } from '../MockData';
+import DiaryPreviewList from '../DiaryPreviewList';
 import DateSelectorModal from './dateSelector/DateSelector';
 
 const tabs = ['월간', '주간'] as const;

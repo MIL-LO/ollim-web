@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { EditToggle } from '../../DiaryPreviewList';
-import { KebabMenuSVG, PlusSVG } from '../../../../../../public/svg/Icons';
+import { EditToggle } from '../DiaryPreviewList';
+import { KebabMenuSVG, PlusSVG } from '../../../../../public/svg/Icons';
 import { AlertModal, ConfirmModal } from '@/components/common/Modal';
 import { diaryCollections } from '@/components/pages/diary/MockData';
 import { useToast } from '@/hooks/useToast';

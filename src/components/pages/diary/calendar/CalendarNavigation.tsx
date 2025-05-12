@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { LeftTriangleSVG, RightTriangleSVG } from '../../../../../../public/svg/Icons';
+import { LeftTriangleSVG, RightTriangleSVG } from '../../../../../public/svg/Icons';
 
 interface Props {
   year: number;

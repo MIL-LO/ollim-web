@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import DiaryPreviewList from '../../DiaryPreviewList';
-import { diariesByCollection, diaryCollections, diaryMockData } from '../../MockData';
-import { BelowArrowSVG } from '../../../../../../public/svg/Icons';
+import DiaryPreviewList from '../DiaryPreviewList';
+import { diariesByCollection, diaryCollections, diaryMockData } from '../MockData';
+import { BelowArrowSVG } from '../../../../../public/svg/Icons';
 import { useState } from 'react';
-import { BottomSheetModal } from '../../BottomSheetModal';
+import { BottomSheetModal } from '../BottomSheetModal';
 
 interface SelectedCollectionProps {
   selectedCollectionId: string;

@@ -13,10 +13,13 @@ import {
   MBTIOptionsContainer,
   MBTIOption,
 } from '@/components/styles/Onboarding.styles';
+import PageButton from '@/components/common/Button/PageButton';
+import { ConfirmModal } from '@/components/common/Modal';
 
 export default function Step3() {
   const router = useRouter();
   const [onboardingData, setOnboardingData] = useRecoilState(onboardingDataState);
+  const [isContinueModal, setIsContinueModal] = useState<boolean>(false);
   const setCurrentStep = useSetRecoilState(currentStepState);
 
   // 로컬 상태 (폼 제어용)
@@ -99,15 +102,26 @@ export default function Step3() {
       </FormSection>
 
       <ButtonContainer>
-        <Button title="건너뛰기" variant="outline" onClick={handleSkip} fullWidth />
-        <Button
-          title="완료"
-          variant="primary"
-          onClick={handleNext}
-          fullWidth
-          disabled={isNextDisabled}
-        />
+        <PageButton title="나중에 하기" design="gray" onClick={() => setIsContinueModal(true)} />
+        <PageButton title="다음" design="darkBlue" onClick={handleNext} disabled={isNextDisabled} />
       </ButtonContainer>
+
+      {isContinueModal && (
+        <ConfirmModal
+          title="나중에 하시겠습니까?"
+          descript={
+            <>
+              <p>지금까지 작성한 정보는 사라져요!</p>
+              <p>나중에 마이페이지에서 다시 설정할 수 있어요</p>
+            </>
+          }
+          onClose={() => setIsContinueModal(false)}
+          yesBtn={
+            <PageButton title="나중에 할래요" onClick={() => router.push('/home')}></PageButton>
+          }
+          noBtn={<PageButton title="지금 할래요" design="gray"></PageButton>}
+        ></ConfirmModal>
+      )}
     </>
   );
 }
