@@ -1,3 +1,4 @@
+// src/atoms/authAtoms.ts
 import { atom } from 'recoil';
 
 export interface AuthState {
