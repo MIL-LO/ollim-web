@@ -4,7 +4,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRecoilState } from 'recoil';
-import { authState } from '@/atoms/authAtoms';
+import { authState, AuthState, User } from '@/atoms/authAtoms';
 import { ButtonContainer, AppleButton, GoogleButton, ErrorMessage } from './styles';
 
 // 타입 확장: window 인터페이스에 ReactNativeWebView 추가
@@ -19,6 +19,9 @@ declare global {
 interface LoginButtonsProps {
   className?: string;
 }
+
+// 환경 변수에서 API URL 가져오기
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // 네이티브 앱 환경 체크
 const isInApp = (): boolean => {
@@ -46,21 +49,27 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
       const status = localStorage.getItem('auth_status');
 
       if (accessToken) {
-        setAuth({
+        // 사용자 정보 생성
+        const user: User = {
+          id: '', // 토큰에서 디코딩하거나 API 호출로 가져와야 할 수 있음
+          name: '',
+          email: '',
+          provider: status === 'APPLE' ? 'apple' : 'google',
+        };
+
+        // 새 상태 객체 생성
+        const newAuthState: AuthState = {
           isLoggedIn: true,
-          user: {
-            id: '', // 토큰에서 디코딩하거나 API 호출로 가져와야 할 수 있음
-            name: '',
-            email: '',
-            provider: status === 'APPLE' ? 'apple' : 'google',
-          },
           isLoading: false,
           error: null,
-        });
+          user,
+        };
+
+        setAuth(newAuthState);
 
         // 인증 상태에 따른 리디렉션
         if (status === 'PENDING') {
-          router.push('/signup/additional');
+          router.push('/onboarding/step1');
         } else if (status === 'ACTIVE') {
           router.push('/home');
         }
@@ -114,7 +123,6 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
         });
       } else {
         // 웹 환경에서는 직접 OAuth URL로 리다이렉트
-        // API URI를 직접 사용하지 않고 비워둠 (백엔드에서 설정하도록)
         window.location.href = '/oauth/apple';
       }
     } catch (error) {
@@ -130,7 +138,7 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
   const handleGoogleLogin = () => {
     setAuth((prev) => ({ ...prev, isLoading: true, error: null }));
 
-    // OAuth URL - API URI를 직접 사용하지 않고 비워둠 (백엔드에서 설정하도록)
+    // OAuth URL - 환경 변수 사용
     const googleOAuthURL = '/oauth/google';
 
     try {
@@ -179,18 +187,24 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
               localStorage.setItem('refreshToken', data.payload.refreshToken);
               localStorage.setItem('auth_status', data.payload.status || 'ACTIVE');
 
-              // 인증 상태 업데이트
-              setAuth({
+              // 사용자 정보 생성
+              const user: User = {
+                id: '',
+                name: '',
+                email: '',
+                provider: 'google',
+              };
+
+              // 새 상태 객체 생성
+              const newAuthState: AuthState = {
                 isLoggedIn: true,
                 isLoading: false,
                 error: null,
-                user: {
-                  id: '',
-                  name: '',
-                  email: '',
-                  provider: 'google',
-                },
-              });
+                user,
+              };
+
+              // 인증 상태 업데이트
+              setAuth(newAuthState);
 
               // 페이지 이동
               if (data.payload.status === 'PENDING') {
@@ -247,18 +261,24 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
                     localStorage.setItem('refreshToken', authData.refreshToken);
                     localStorage.setItem('auth_status', authData.status || 'ACTIVE');
 
-                    // 인증 상태 업데이트
-                    setAuth({
+                    // 사용자 정보 생성
+                    const user: User = {
+                      id: '',
+                      name: '',
+                      email: '',
+                      provider: 'google',
+                    };
+
+                    // 새 상태 객체 생성
+                    const newAuthState: AuthState = {
                       isLoggedIn: true,
                       isLoading: false,
                       error: null,
-                      user: {
-                        id: '',
-                        name: '',
-                        email: '',
-                        provider: 'google',
-                      },
-                    });
+                      user,
+                    };
+
+                    // 인증 상태 업데이트
+                    setAuth(newAuthState);
 
                     // 상태에 따라 페이지 이동
                     if (authData.status === 'PENDING') {

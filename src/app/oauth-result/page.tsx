@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRecoilState } from 'recoil';
-import { authState } from '@/atoms/authAtoms';
+import { authState, AuthState, User } from '@/atoms/authAtoms';
 
 export default function OAuthResult() {
   const router = useRouter();
@@ -59,17 +59,23 @@ export default function OAuthResult() {
               }
 
               // 2. Recoil 상태 업데이트
-              setAuth({
+              // 사용자 정보 생성
+              const user: User = {
+                id: '',
+                name: '',
+                email: '',
+                provider: 'google',
+              };
+
+              // 새 상태 객체 생성
+              const newAuthState: AuthState = {
                 isLoggedIn: true,
                 isLoading: false,
                 error: null,
-                user: {
-                  id: '',
-                  name: '',
-                  email: '',
-                  provider: 'google',
-                },
-              });
+                user,
+              };
+
+              setAuth(newAuthState);
 
               // 3. 쿠키에도 백업 저장 (로컬 스토리지 문제 대비)
               document.cookie = `accessToken=${authData.accessToken}; path=/; max-age=3600`;
