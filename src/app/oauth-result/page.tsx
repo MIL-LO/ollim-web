@@ -28,8 +28,8 @@ export default function OAuthResult() {
         console.log('페이지 본문 길이:', bodyText.length);
         console.log('페이지 본문 앞부분:', bodyText.substring(0, 200));
 
-        // JSON 형식 확인 및 추출
-        const jsonMatch = bodyText.match(/(\{.*\})/s);
+        // JSON 형식 확인 및 추출 - 정규식 수정: /s 플래그 제거
+        const jsonMatch = bodyText.match(/(\{.*\})/);
         if (jsonMatch) {
           try {
             // 추출된 JSON 문자열 파싱
@@ -53,7 +53,9 @@ export default function OAuthResult() {
                 console.log('auth_status 저장 성공');
               } catch (storageError) {
                 console.error('로컬 스토리지 저장 오류:', storageError);
-                setDebugInfo((prev) => `${prev}\n로컬 스토리지 오류: ${storageError.message}`);
+                const errorMessage =
+                  storageError instanceof Error ? storageError.message : String(storageError);
+                setDebugInfo((prev) => `${prev}\n로컬 스토리지 오류: ${errorMessage}`);
               }
 
               // 2. Recoil 상태 업데이트
@@ -91,7 +93,8 @@ export default function OAuthResult() {
             }
           } catch (jsonError) {
             console.error('JSON 파싱 오류:', jsonError);
-            setDebugInfo((prev) => `${prev}\nJSON 파싱 실패: ${jsonError.message}`);
+            const errorMessage = jsonError instanceof Error ? jsonError.message : String(jsonError);
+            setDebugInfo((prev) => `${prev}\nJSON 파싱 실패: ${errorMessage}`);
           }
         } else {
           setDebugInfo((prev) => `${prev}\nJSON 형식 찾지 못함`);
@@ -100,7 +103,8 @@ export default function OAuthResult() {
         throw new Error('유효한 인증 정보를 찾을 수 없습니다.');
       } catch (error) {
         console.error('인증 처리 오류:', error);
-        setDebugInfo((prev) => `${prev}\n최종 오류: ${error.message}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        setDebugInfo((prev) => `${prev}\n최종 오류: ${errorMessage}`);
 
         setAuth((prev) => ({
           ...prev,

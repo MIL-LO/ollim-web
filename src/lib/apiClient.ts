@@ -1,15 +1,8 @@
-'use client';
-
 // src/lib/apiClient.ts
-import axios, {
-  AxiosResponse,
-  AxiosError,
-  InternalAxiosRequestConfig,
-  AxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosResponse, AxiosError, InternalAxiosRequestConfig, AxiosHeaders } from 'axios';
 
 // 환경 변수에서 API URL 가져오기
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.millo-ollim.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // _retry 속성을 추가한 확장 타입 정의
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -36,13 +29,13 @@ apiClient.interceptors.request.use(
       // 'Bearer ' 접두사가 이미 있는지 확인
       const token = accessToken.startsWith('Bearer ') ? accessToken : `Bearer ${accessToken}`;
 
-      // 헤더가 없으면 생성
-      if (!config.headers) {
-        config.headers = {};
+      // headers가 AxiosHeaders 타입인지 확인하고 적절히 설정
+      if (config.headers && config.headers instanceof AxiosHeaders) {
+        config.headers.set('Authorization', token);
+      } else {
+        // 최후의 수단으로 타입 단언 사용
+        (config.headers as any).Authorization = token;
       }
-
-      // Authorization 헤더 설정
-      config.headers.Authorization = token;
     }
 
     return config;
@@ -82,12 +75,13 @@ apiClient.interceptors.response.use(
           // 새 토큰 저장
           localStorage.setItem('accessToken', accessToken);
 
-          // 헤더 업데이트 - 헤더가 없는 경우 처리
-          if (!originalRequest.headers) {
-            originalRequest.headers = {};
+          // 헤더 업데이트 - AxiosHeaders 인스턴스 확인
+          if (originalRequest.headers && originalRequest.headers instanceof AxiosHeaders) {
+            originalRequest.headers.set('Authorization', `Bearer ${accessToken}`);
+          } else {
+            // 최후의 수단으로 타입 단언 사용
+            (originalRequest.headers as any).Authorization = `Bearer ${accessToken}`;
           }
-
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
           // 원래 요청 재시도
           return axios(originalRequest);
