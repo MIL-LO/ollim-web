@@ -123,119 +123,12 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
       }
 
       // API URL 설정
-      const API_URL = 'https://api.millo-ollim.com';
+      const API_URL = process.env.NODE_ENV === 'development'
+        ? 'http://localhost:5000'
+        : process.env.NEXT_PUBLIC_API_URL || 'https://api.millo-ollim.com';
 
-      // 팝업 창으로 OAuth 인증 처리
-      const width = 600;
-      const height = 800;
-      const left = window.screenX + (window.outerWidth - width) / 2;
-      const top = window.screenY + (window.outerHeight - height) / 2;
-
-      // OAuth 요청 시작 기록
-      localStorage.setItem('oauth_in_progress', 'true');
-
-      // 인증 URL로 팝업 열기
-      const oauthWindow = window.open(
-        `${API_URL}/oauth2/authorization/google`,
-        'oauth_google',
-        `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
-      );
-
-      if (!oauthWindow) {
-        // 팝업 차단된 경우
-        alert('팝업이 차단되었습니다. 팝업 차단을 해제해주세요.');
-        setAuth((prev) => ({ ...prev, isLoading: false }));
-        return;
-      }
-
-      // 팝업 상태 확인
-      const checkPopupInterval = setInterval(() => {
-        if (oauthWindow.closed) {
-          clearInterval(checkPopupInterval);
-          setAuth((prev) => ({ ...prev, isLoading: false }));
-          return;
-        }
-
-        try {
-          // 팝업 페이지의 URL 확인
-          const popupUrl = oauthWindow.location.href;
-
-          // OAuth 콜백 URL로 이동했는지 확인
-          if (popupUrl.includes('/login/oauth2/code/google')) {
-            try {
-              // 페이지 내용 가져오기
-              const content = oauthWindow.document.body.innerText;
-
-              // JSON 형식인지 확인
-              if (
-                content &&
-                (content.includes('accessToken') || content.includes('refreshToken'))
-              ) {
-                try {
-                  // JSON 파싱
-                  const jsonData = JSON.parse(content);
-
-                  // 토큰 저장
-                  localStorage.setItem('accessToken', jsonData.accessToken);
-                  localStorage.setItem('refreshToken', jsonData.refreshToken || '');
-                  localStorage.setItem('auth_status', jsonData.status || 'ACTIVE');
-
-                  // 팝업 창 닫기
-                  oauthWindow.close();
-                  clearInterval(checkPopupInterval);
-
-                  // 인증 상태 업데이트
-                  setAuth({
-                    isLoggedIn: true,
-                    isLoading: false,
-                    error: null,
-                    user: {
-                      id: '',
-                      name: '',
-                      email: '',
-                      provider: 'google',
-                    },
-                  });
-
-                  // 상태에 따라 리다이렉트
-                  if (jsonData.status === 'PENDING') {
-                    router.push('/onboarding/step1');
-                  } else {
-                    router.push('/home');
-                  }
-                } catch (error) {
-                  console.error('JSON 파싱 오류:', error);
-
-                  // JSON 파싱 실패 시 auth-handler.html로 리다이렉트
-                  oauthWindow.location.href = `${window.location.origin}/auth-handler.html`;
-                }
-              }
-            } catch (error) {
-              // CORS 오류 발생 시 auth-handler.html로 리다이렉트
-              try {
-                oauthWindow.location.href = `${window.location.origin}/auth-handler.html`;
-              } catch (redirectError) {
-                // 추가 오류 무시
-              }
-            }
-          }
-        } catch (error) {
-          // CORS 오류 무시
-        }
-      }, 500);
-
-      // 30초 타임아웃
-      setTimeout(() => {
-        if (!oauthWindow.closed) {
-          oauthWindow.close();
-        }
-        clearInterval(checkPopupInterval);
-        setAuth((prev) => ({
-          ...prev,
-          isLoading: false,
-          error: '로그인 시간이 초과되었습니다. 다시 시도해주세요.',
-        }));
-      }, 30000);
+      // 구글 로그인 페이지로 리디렉션
+      window.location.href = `${API_URL}/oauth2/authorization/google`;
     } catch (error) {
       console.error('구글 로그인 오류:', error);
       setAuth((prev) => ({
