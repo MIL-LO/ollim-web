@@ -15,8 +15,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   // OAuth 리디렉트 추가
+  // next.config.js의 redirects 부분 수정
+
   async redirects() {
-    // 환경 변수에서 API URL 가져오기
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.millo-ollim.com';
 
     return [
@@ -28,6 +29,19 @@ const nextConfig = {
       {
         source: '/oauth/apple',
         destination: `${API_URL}/oauth2/authorization/apple`,
+        permanent: false,
+      },
+      // OAuth2 콜백 처리를 위한 경로 설정
+      {
+        source: '/login/oauth2/code/:provider',
+        destination: '/oauth-handler-debug.html',
+        permanent: false,
+      },
+      // 에러 페이지도 가로채서 처리
+      {
+        source: '/login',
+        has: [{ type: 'query', key: 'error' }],
+        destination: '/oauth-handler-debug.html',
         permanent: false,
       },
     ];

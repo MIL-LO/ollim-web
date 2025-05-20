@@ -1,0 +1,552 @@
+<!-- public/oauth-handler-debug.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OAuth 응답 디버거</title>
+  <style>
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+          margin: 0;
+          padding: 20px;
+          background-color: #f5f5f5;
+      }
+      .container {
+          max-width: 800px;
+          margin: 0 auto;
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+      }
+      .header {
+          text-align: center;
+          margin-bottom: 20px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid #eee;
+      }
+      .actions {
+          margin: 20px 0;
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+      }
+      .button {
+          padding: 10px 20px;
+          background-color: #0070f3;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+      }
+      .button.secondary {
+          background-color: #f3f3f3;
+          color: #333;
+      }
+      .debug-container {
+          margin-top: 20px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 10px;
+          background-color: #f9f9f9;
+          height: 300px;
+          overflow-y: auto;
+      }
+      .debug-log {
+          margin: 0;
+          padding: 10px;
+          font-family: monospace;
+          font-size: 14px;
+          white-space: pre-wrap;
+          word-break: break-all;
+      }
+      .log-entry {
+          margin-bottom: 5px;
+          border-bottom: 1px solid #eee;
+          padding-bottom: 5px;
+      }
+      .log-time {
+          color: #999;
+          font-size: 12px;
+      }
+      .log-message {
+          margin-left: 10px;
+      }
+      .token-info {
+          margin-top: 20px;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          background-color: #f0f0f0;
+          display: none;
+      }
+      .json-display {
+          margin-top: 20px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 10px;
+          background-color: #f0f0f0;
+          max-height: 300px;
+          overflow-y: auto;
+          white-space: pre-wrap;
+          font-family: monospace;
+      }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>OAuth 응답 디버거</h1>
+    <p>이 페이지는 OAuth 응답을 분석하고 적절한 처리를 수행합니다.</p>
+  </div>
+
+  <div class="token-info" id="token-info">
+    <h3>검출된 토큰 정보</h3>
+    <div id="token-content"></div>
+  </div>
+
+  <div class="actions">
+    <button id="extract-btn" class="button">JSON 수동 추출 시도</button>
+    <button id="fetch-page-btn" class="button secondary">현재 페이지 다시 가져오기</button>
+    <button id="redirect-btn" class="button secondary">로그인 페이지로 돌아가기</button>
+  </div>
+
+  <div class="debug-container">
+    <div id="debug-log" class="debug-log"></div>
+  </div>
+
+  <div id="json-display" class="json-display" style="display: none;"></div>
+</div>
+
+<script>
+  // 로그 작성 함수
+  function logToConsole(message, data = null) {
+    const now = new Date();
+    const timeStr = now.toISOString().split('T')[1].split('.')[0];
+
+    let logText = `[${timeStr}] ${message}`;
+    console.log(logText, data || '');
+
+    const debugLog = document.getElementById('debug-log');
+    const logEntry = document.createElement('div');
+    logEntry.className = 'log-entry';
+
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'log-time';
+    timeSpan.textContent = `[${timeStr}]`;
+
+    const messageSpan = document.createElement('span');
+    messageSpan.className = 'log-message';
+    messageSpan.textContent = message;
+
+    logEntry.appendChild(timeSpan);
+    logEntry.appendChild(messageSpan);
+
+    if (data) {
+      let dataStr;
+      try {
+        if (typeof data === 'object') {
+          dataStr = JSON.stringify(data, null, 2);
+        } else {
+          dataStr = String(data);
+        }
+
+        const dataElem = document.createElement('pre');
+        dataElem.textContent = dataStr;
+        dataElem.style.marginLeft = '20px';
+        dataElem.style.fontSize = '12px';
+        logEntry.appendChild(dataElem);
+      } catch (e) {
+        const errorElem = document.createElement('div');
+        errorElem.textContent = `[데이터 형식화 오류: ${e.message}]`;
+        errorElem.style.color = 'red';
+        logEntry.appendChild(errorElem);
+      }
+    }
+
+    debugLog.appendChild(logEntry);
+    debugLog.scrollTop = debugLog.scrollHeight;
+  }
+
+  // 페이지 정보 수집 및 로깅
+  function logPageInfo() {
+    logToConsole('페이지 정보 수집 시작');
+
+    // URL 정보
+    logToConsole(`현재 URL: ${window.location.href}`);
+
+    // 쿼리 파라미터
+    const params = new URLSearchParams(window.location.search);
+    const queryParams = {};
+    params.forEach((value, key) => {
+      queryParams[key] = value;
+    });
+    logToConsole('쿼리 파라미터:', queryParams);
+
+    // localStorage 확인
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      const authStatus = localStorage.getItem('auth_status');
+
+      logToConsole('현재 localStorage 상태:', {
+        accessToken: accessToken ? '존재함 (길이: ' + accessToken.length + ')' : '없음',
+        refreshToken: refreshToken ? '존재함 (길이: ' + refreshToken.length + ')' : '없음',
+        auth_status: authStatus || '없음'
+      });
+    } catch (e) {
+      logToConsole('localStorage 접근 오류:', e.message);
+    }
+
+    // 페이지 기본 콘텐츠 로깅
+    try {
+      const bodyText = document.body.innerText;
+      logToConsole(`body 텍스트 길이: ${bodyText.length} 글자`);
+
+      // accessToken 여부 확인
+      if (bodyText.includes('accessToken')) {
+        logToConsole('본문에 accessToken 키워드 발견!');
+
+        // 주변 텍스트 표시
+        const tokenIndex = bodyText.indexOf('accessToken');
+        const snippet = bodyText.substring(
+          Math.max(0, tokenIndex - 20),
+          Math.min(bodyText.length, tokenIndex + 200)
+        );
+        logToConsole('토큰 주변 텍스트:', snippet);
+      } else {
+        logToConsole('본문에 accessToken 키워드가 없습니다.');
+      }
+    } catch (e) {
+      logToConsole('페이지 콘텐츠 분석 중 오류:', e.message);
+    }
+  }
+
+  // JSON 추출 시도 함수들
+  function extractJsonFromPage() {
+    logToConsole('페이지에서 JSON 추출 시도');
+
+    try {
+      // 페이지 전체 콘텐츠 가져오기
+      const fullContent = document.documentElement.outerHTML;
+      const bodyText = document.body.innerText;
+
+      logToConsole(`페이지 콘텐츠 길이: HTML=${fullContent.length}, TEXT=${bodyText.length}`);
+
+      // 방법 1: JSON 패턴 검색 (정규식)
+      logToConsole('방법 1: 정규식으로 JSON 패턴 찾기');
+      let jsonMatch = null;
+
+      // JSON 패턴 1: accessToken이 포함된 중괄호 객체
+      const regex1 = /\{[\s\S]*"accessToken"[\s\S]*"refreshToken"[\s\S]*\}/;
+      jsonMatch = fullContent.match(regex1);
+
+      if (jsonMatch) {
+        logToConsole('정규식 1로 JSON 패턴 발견');
+        const jsonStr = jsonMatch[0];
+
+        // JSON 파싱 시도
+        try {
+          const jsonData = JSON.parse(jsonStr);
+          logToConsole('JSON 파싱 성공:', jsonData);
+          return jsonData;
+        } catch (e) {
+          logToConsole('JSON 파싱 실패 (정규식 1):', e.message);
+        }
+      }
+
+      // JSON 패턴 2: 더 관대한 정규식
+      const regex2 = /\{(?:[^{}]|"[^"]*")*"accessToken"[\s\S]*?\}/;
+      jsonMatch = fullContent.match(regex2);
+
+      if (jsonMatch) {
+        logToConsole('정규식 2로 JSON 패턴 발견');
+        const jsonStr = jsonMatch[0];
+
+        try {
+          const jsonData = JSON.parse(jsonStr);
+          logToConsole('JSON 파싱 성공:', jsonData);
+          return jsonData;
+        } catch (e) {
+          logToConsole('JSON 파싱 실패 (정규식 2):', e.message);
+        }
+      }
+
+      // 방법 2: pretty print 결과 추출
+      logToConsole('방법 2: pretty print 결과 추출 시도');
+      if (bodyText.includes('{') && bodyText.includes('}') &&
+        bodyText.includes('accessToken') && bodyText.includes('refreshToken')) {
+
+        logToConsole('브라우저 pretty print 결과로 보이는 JSON 발견');
+
+        // 시작 중괄호와 끝 중괄호 찾기
+        const startIdx = bodyText.indexOf('{');
+        const endIdx = bodyText.lastIndexOf('}') + 1;
+
+        if (startIdx > -1 && endIdx > startIdx) {
+          const jsonStr = bodyText.substring(startIdx, endIdx);
+          logToConsole(`중괄호 기준 JSON 추출: ${jsonStr.length} 글자`);
+
+          try {
+            // JSON 정규화 (콘솔 출력 형태 정리)
+            const normalizedJson = jsonStr
+              .replace(/\s+/g, ' ')  // 연속된 공백 제거
+              .replace(/(\w+):/g, '"$1":')  // 키에 따옴표 추가
+              .replace(/'/g, '"');  // 작은따옴표를 큰따옴표로 변경
+
+            logToConsole('정규화된 JSON:', normalizedJson);
+
+            const jsonData = JSON.parse(normalizedJson);
+            logToConsole('JSON 파싱 성공 (정규화):', jsonData);
+            return jsonData;
+          } catch (e) {
+            logToConsole('정규화된 JSON 파싱 실패:', e.message);
+
+            // 원본 그대로 시도
+            try {
+              const jsonData = JSON.parse(jsonStr);
+              logToConsole('원본 JSON 파싱 성공:', jsonData);
+              return jsonData;
+            } catch (e) {
+              logToConsole('원본 JSON 파싱 실패:', e.message);
+            }
+          }
+        }
+      }
+
+      // 방법 3: 텍스트 기반 추출 (마지막 수단)
+      logToConsole('방법 3: 텍스트 기반 추출 시도');
+      if (bodyText.includes('accessToken') && bodyText.includes('refreshToken')) {
+        // accessToken과 refreshToken 값 추출 시도
+        const accessTokenMatch = bodyText.match(/"accessToken"\s*:\s*"([^"]+)"/);
+        const refreshTokenMatch = bodyText.match(/"refreshToken"\s*:\s*"([^"]+)"/);
+        const statusMatch = bodyText.match(/"status"\s*:\s*"([^"]+)"/);
+
+        if (accessTokenMatch && refreshTokenMatch) {
+          const accessToken = accessTokenMatch[1];
+          const refreshToken = refreshTokenMatch[1];
+          const status = statusMatch ? statusMatch[1] : 'ACTIVE';
+
+          logToConsole('텍스트 추출로 토큰 발견:', {
+            accessToken: accessToken.substring(0, 10) + '...',
+            refreshToken: refreshToken.substring(0, 10) + '...',
+            status
+          });
+
+          return {
+            accessToken,
+            refreshToken,
+            status
+          };
+        }
+      }
+
+      logToConsole('모든 JSON 추출 방법 실패');
+      return null;
+    } catch (e) {
+      logToConsole('JSON 추출 과정에서 오류 발생:', e.message);
+      return null;
+    }
+  }
+
+  // 페이지 다시 가져오기 함수
+  async function fetchCurrentPage() {
+    logToConsole('현재 페이지 다시 가져오기 시도');
+
+    try {
+      const response = await fetch(window.location.href);
+      logToConsole(`응답 상태: ${response.status} ${response.statusText}`);
+
+      const text = await response.text();
+      logToConsole(`응답 길이: ${text.length} 글자`);
+
+      // JSON 확인
+      if (text.includes('accessToken') && text.includes('refreshToken')) {
+        logToConsole('응답에서 토큰 키워드 발견');
+
+        // JSON 패턴 찾기
+        const jsonMatch = text.match(/\{[\s\S]*"accessToken"[\s\S]*"refreshToken"[\s\S]*\}/);
+        if (jsonMatch) {
+          const jsonStr = jsonMatch[0];
+
+          try {
+            const jsonData = JSON.parse(jsonStr);
+            logToConsole('fetch 응답에서 JSON 파싱 성공:', jsonData);
+            return jsonData;
+          } catch (e) {
+            logToConsole('fetch 응답의 JSON 파싱 실패:', e.message);
+          }
+        }
+      }
+
+      logToConsole('fetch 응답에서 유효한 JSON을 찾지 못함');
+      return null;
+    } catch (e) {
+      logToConsole('fetch 요청 실패:', e.message);
+      return null;
+    }
+  }
+
+  // 토큰 처리 및 저장 함수
+  function processAndSaveTokens(data) {
+    if (!data || !data.accessToken) {
+      logToConsole('처리할 유효한 토큰 데이터가 없음');
+      return false;
+    }
+
+    logToConsole('토큰 저장 시작:', {
+      accessToken: data.accessToken.substring(0, 10) + '...',
+      refreshToken: data.refreshToken.substring(0, 10) + '...',
+      status: data.status
+    });
+
+    try {
+      // localStorage에 토큰 저장
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      localStorage.setItem('auth_status', data.status || 'ACTIVE');
+
+      logToConsole('토큰이 localStorage에 저장됨');
+
+      // 토큰 정보 표시
+      const tokenInfo = document.getElementById('token-info');
+      const tokenContent = document.getElementById('token-content');
+
+      tokenInfo.style.display = 'block';
+      tokenContent.innerHTML = `
+          <p><strong>AccessToken:</strong> ${data.accessToken.substring(0, 15)}...</p>
+          <p><strong>RefreshToken:</strong> ${data.refreshToken.substring(0, 15)}...</p>
+          <p><strong>Status:</strong> ${data.status || 'ACTIVE'}</p>
+          <p><strong>저장 시간:</strong> ${new Date().toLocaleTimeString()}</p>
+        `;
+
+      // JSON 내용 전체 표시
+      const jsonDisplay = document.getElementById('json-display');
+      jsonDisplay.style.display = 'block';
+      jsonDisplay.textContent = JSON.stringify(data, null, 2);
+
+      return true;
+    } catch (e) {
+      logToConsole('토큰 저장 중 오류:', e.message);
+      return false;
+    }
+  }
+
+  // 페이지 리다이렉트 함수
+  function redirectBasedOnStatus() {
+    const status = localStorage.getItem('auth_status');
+
+    logToConsole(`저장된 상태에 따라 리다이렉트: ${status}`);
+
+    if (status === 'PENDING') {
+      logToConsole('온보딩 페이지로 이동 중...');
+      window.location.href = '/onboarding/step1';
+    } else {
+      logToConsole('홈 페이지로 이동 중...');
+      window.location.href = '/home';
+    }
+  }
+
+  // 페이지 로드 시 실행
+  window.addEventListener('DOMContentLoaded', async function() {
+    logToConsole('페이지 로드됨');
+
+    // 1초 대기 후 실행 (페이지 렌더링 완료 대기)
+    setTimeout(async function() {
+      // 페이지 정보 로깅
+      logPageInfo();
+
+      // JSON 추출 시도
+      logToConsole('자동 JSON 추출 프로세스 시작');
+
+      // 1. 페이지에서 직접 JSON 추출
+      const pageData = extractJsonFromPage();
+
+      if (pageData) {
+        logToConsole('페이지에서 JSON을 성공적으로 추출');
+
+        if (processAndSaveTokens(pageData)) {
+          logToConsole('3초 후 적절한 페이지로 리다이렉트 예정');
+          setTimeout(redirectBasedOnStatus, 3000);
+        }
+      } else {
+        logToConsole('페이지에서 JSON 추출 실패, 페이지 다시 가져오기 시도');
+
+        // 2. 현재 페이지 다시 가져와서 처리
+        const fetchedData = await fetchCurrentPage();
+
+        if (fetchedData) {
+          logToConsole('페이지 다시 가져오기에서 JSON 추출 성공');
+
+          if (processAndSaveTokens(fetchedData)) {
+            logToConsole('3초 후 적절한 페이지로 리다이렉트 예정');
+            setTimeout(redirectBasedOnStatus, 3000);
+          }
+        } else {
+          logToConsole('모든 자동 추출 방법 실패. 수동 추출 필요', null);
+        }
+      }
+    }, 1000);
+
+// 버튼 이벤트 리스너 설정
+    document.getElementById('extract-btn').addEventListener('click', function() {
+      logToConsole('수동 JSON 추출 시도 버튼 클릭');
+
+      const jsonData = extractJsonFromPage();
+      if (jsonData) {
+        logToConsole('수동 추출 성공:', jsonData);
+
+        if (processAndSaveTokens(jsonData)) {
+          logToConsole('수동 추출 및 저장 완료. 이제 리다이렉트 버튼을 클릭하거나 페이지를 직접 이동하세요.');
+        }
+      } else {
+        logToConsole('수동 추출 실패');
+
+        // 사용자에게 JSON 입력 창 제공
+        const jsonStr = prompt('JSON 데이터를 직접 붙여넣으세요:');
+        if (jsonStr) {
+          try {
+            const manualData = JSON.parse(jsonStr);
+            logToConsole('수동 입력 JSON 파싱 성공:', manualData);
+
+            if (processAndSaveTokens(manualData)) {
+              logToConsole('수동 입력 데이터 저장 완료');
+            }
+          } catch (e) {
+            logToConsole('수동 입력 JSON 파싱 실패:', e.message);
+            alert('유효한 JSON 형식이 아닙니다: ' + e.message);
+          }
+        }
+      }
+    });
+
+    document.getElementById('fetch-page-btn').addEventListener('click', async function() {
+      logToConsole('페이지 다시 가져오기 버튼 클릭');
+
+      const fetchedData = await fetchCurrentPage();
+      if (fetchedData) {
+        logToConsole('페이지 다시 가져오기 성공:', fetchedData);
+
+        if (processAndSaveTokens(fetchedData)) {
+          logToConsole('가져온 데이터 저장 완료. 이제 리다이렉트 버튼을 클릭하거나 페이지를 직접 이동하세요.');
+        }
+      } else {
+        logToConsole('페이지 다시 가져오기에서 JSON을 찾지 못함');
+        alert('페이지를 다시 가져왔지만 유효한 JSON을 찾지 못했습니다.');
+      }
+    });
+
+    document.getElementById('redirect-btn').addEventListener('click', function() {
+      const hasToken = localStorage.getItem('accessToken');
+
+      if (hasToken) {
+        logToConsole('리다이렉트 버튼 클릭: 토큰 있음, 상태에 따라 리다이렉트');
+        redirectBasedOnStatus();
+      } else {
+        logToConsole('리다이렉트 버튼 클릭: 토큰 없음, 로그인 페이지로 이동');
+        window.location.href = '/login';
+      }
+    });
+  });
+</script>
+</body>
+</html>

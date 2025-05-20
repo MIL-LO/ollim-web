@@ -1,0 +1,285 @@
+<!-- public/token-handler.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>토큰 수동 처리</title>
+  <style>
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+          margin: 0;
+          padding: 20px;
+          background-color: #f5f5f5;
+      }
+      .container {
+          max-width: 800px;
+          margin: 0 auto;
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+      }
+      h1 {
+          margin-top: 0;
+          text-align: center;
+      }
+      textarea {
+          width: 100%;
+          height: 200px;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-family: monospace;
+          margin-bottom: 20px;
+          resize: vertical;
+      }
+      .button-group {
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+          margin-bottom: 20px;
+      }
+      button {
+          padding: 10px 20px;
+          background-color: #0070f3;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+      }
+      button.secondary {
+          background-color: #f3f3f3;
+          color: #333;
+      }
+      .result {
+          margin-top: 20px;
+          padding: 15px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          background-color: #f9f9f9;
+      }
+      .success {
+          background-color: #d4edda;
+          border-color: #c3e6cb;
+      }
+      .error {
+          background-color: #f8d7da;
+          border-color: #f5c6cb;
+      }
+      .debug-info {
+          font-family: monospace;
+          font-size: 12px;
+          background-color: #f0f0f0;
+          padding: 10px;
+          border-radius: 4px;
+          margin-top: 10px;
+          white-space: pre-wrap;
+          word-break: break-all;
+      }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>OAuth 토큰 수동 처리</h1>
+  <p>백엔드에서 반환한 JSON 응답을 아래에 붙여넣고 "토큰 처리" 버튼을 클릭하세요.</p>
+
+  <textarea id="json-input" placeholder='예: { "accessToken": "eyJhbGc...", "refreshToken": "eyJhbGc...", "status": "PENDING" }'></textarea>
+
+  <div class="button-group">
+    <button id="process-btn">토큰 처리</button>
+    <button id="redirect-btn" class="secondary">홈/온보딩 페이지로 이동</button>
+    <button id="login-btn" class="secondary">로그인 페이지로 돌아가기</button>
+  </div>
+
+  <div id="result" class="result" style="display: none;"></div>
+
+  <div id="debug-info" class="debug-info" style="display: none;"></div>
+</div>
+
+<script>
+  // 디버그 로그 함수
+  function log(message, data = null) {
+    console.log(message, data || '');
+
+    const debugInfo = document.getElementById('debug-info');
+    debugInfo.style.display = 'block';
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString();
+
+    let logMessage = `[${timeStr}] ${message}`;
+    if (data) {
+      try {
+        if (typeof data === 'object') {
+          logMessage += '\n' + JSON.stringify(data, null, 2);
+        } else {
+          logMessage += ` ${data}`;
+        }
+      } catch (e) {
+        logMessage += ` [데이터 형식화 오류: ${e.message}]`;
+      }
+    }
+
+    debugInfo.textContent += logMessage + '\n\n';
+    debugInfo.scrollTop = debugInfo.scrollHeight;
+  }
+
+  // 결과 표시 함수
+  function showResult(message, isSuccess = true) {
+    const resultElem = document.getElementById('result');
+    resultElem.innerHTML = message;
+    resultElem.style.display = 'block';
+
+    if (isSuccess) {
+      resultElem.classList.add('success');
+      resultElem.classList.remove('error');
+    } else {
+      resultElem.classList.add('error');
+      resultElem.classList.remove('success');
+    }
+  }
+
+  // 토큰 처리 함수
+  function processTokens(jsonData) {
+    log('토큰 처리 시작', jsonData);
+
+    try {
+      if (!jsonData.accessToken) {
+        throw new Error('accessToken이 없습니다');
+      }
+
+      // 토큰 저장
+      localStorage.setItem('accessToken', jsonData.accessToken);
+      localStorage.setItem('refreshToken', jsonData.refreshToken || '');
+      localStorage.setItem('auth_status', jsonData.status || 'ACTIVE');
+
+      log('토큰 저장 완료', {
+        accessToken: jsonData.accessToken.substring(0, 15) + '...',
+        refreshToken: jsonData.refreshToken ? (jsonData.refreshToken.substring(0, 15) + '...') : '없음',
+        status: jsonData.status || 'ACTIVE'
+      });
+
+      showResult(`
+          <h3>✅ 토큰 처리 성공</h3>
+          <p>로컬 스토리지에 토큰이 저장되었습니다.</p>
+          <p><strong>상태:</strong> ${jsonData.status || 'ACTIVE'}</p>
+          <p>"홈/온보딩 페이지로 이동" 버튼을 클릭하여 계속하세요.</p>
+        `, true);
+
+      return true;
+    } catch (error) {
+      log('토큰 처리 오류', error.message);
+
+      showResult(`
+          <h3>❌ 토큰 처리 실패</h3>
+          <p>오류: ${error.message}</p>
+          <p>입력한 JSON을 확인하고 다시 시도하세요.</p>
+        `, false);
+
+      return false;
+    }
+  }
+
+  // 리다이렉트 함수
+  function redirectBasedOnStatus() {
+    const status = localStorage.getItem('auth_status');
+
+    log(`상태에 따라 리다이렉트: ${status}`);
+
+    if (status === 'PENDING') {
+      log('온보딩 페이지로 이동 중...');
+      window.location.href = '/onboarding/step1';
+    } else {
+      log('홈 페이지로 이동 중...');
+      window.location.href = '/home';
+    }
+  }
+
+  // 페이지 로드 시 실행
+  document.addEventListener('DOMContentLoaded', function() {
+    log('페이지 로드됨');
+
+    // 현재 로컬 스토리지 상태 확인
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    const authStatus = localStorage.getItem('auth_status');
+
+    log('현재 로컬 스토리지 상태', {
+      accessToken: accessToken ? '존재함 (길이: ' + accessToken.length + ')' : '없음',
+      refreshToken: refreshToken ? '존재함 (길이: ' + refreshToken.length + ')' : '없음',
+      auth_status: authStatus || '없음'
+    });
+
+    // 토큰 처리 버튼 클릭 이벤트
+    document.getElementById('process-btn').addEventListener('click', function() {
+      log('토큰 처리 버튼 클릭');
+
+      const jsonInput = document.getElementById('json-input').value.trim();
+
+      if (!jsonInput) {
+        showResult('<h3>❌ 오류</h3><p>JSON 데이터를 입력하세요.</p>', false);
+        return;
+      }
+
+      try {
+        // JSON 파싱 시도
+        const jsonData = JSON.parse(jsonInput);
+        log('JSON 파싱 성공', jsonData);
+
+        processTokens(jsonData);
+      } catch (error) {
+        log('JSON 파싱 오류', error.message);
+
+        // 이스케이프 문자 처리 시도
+        try {
+          const cleanedInput = jsonInput
+            .replace(/\\"/g, '"')  // 이스케이프된 따옴표 처리
+            .replace(/\\n/g, '')   // 줄바꿈 제거
+            .replace(/\\t/g, '')   // 탭 제거
+            .replace(/\\/g, '');   // 나머지 백슬래시 제거
+
+          log('정리된 JSON 입력', cleanedInput);
+
+          const jsonData = JSON.parse(cleanedInput);
+          log('정리 후 JSON 파싱 성공', jsonData);
+
+          processTokens(jsonData);
+        } catch (e) {
+          log('정리 후에도 JSON 파싱 실패', e.message);
+
+          showResult(`
+              <h3>❌ JSON 파싱 오류</h3>
+              <p>입력된 텍스트를 JSON으로 파싱할 수 없습니다.</p>
+              <p>오류: ${error.message}</p>
+              <p>올바른 JSON 형식인지 확인하세요.</p>
+            `, false);
+        }
+      }
+    });
+
+    // 리다이렉트 버튼 클릭 이벤트
+    document.getElementById('redirect-btn').addEventListener('click', function() {
+      log('리다이렉트 버튼 클릭');
+
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (accessToken) {
+        redirectBasedOnStatus();
+      } else {
+        log('토큰이 없어 리다이렉트 불가');
+
+        showResult(`
+            <h3>⚠️ 토큰 없음</h3>
+            <p>저장된 토큰이 없습니다. 먼저 토큰을 처리해야 합니다.</p>
+          `, false);
+      }
+    });
+
+    // 로그인 페이지 버튼 클릭 이벤트
+    document.getElementById('login-btn').addEventListener('click', function() {
+      log('로그인 페이지 버튼 클릭');
+      window.location.href = '/login';
+    });
+  });
+</script>
+</body>
+</html>
