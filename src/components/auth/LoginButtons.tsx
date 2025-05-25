@@ -47,7 +47,7 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
 
       if (accessToken) {
         // 사용자 정보 생성
-        const user: User = {
+        const user: { provider: string; name: string; id: string; email: string } = {
           id: '',
           name: '',
           email: '',
@@ -55,7 +55,12 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
         };
 
         // 새 상태 객체 생성
-        const newAuthState: AuthState = {
+        const newAuthState: {
+          isLoading: boolean;
+          isLoggedIn: boolean;
+          error: null;
+          user: { provider: string; name: string; id: string; email: string };
+        } = {
           isLoggedIn: true,
           isLoading: false,
           error: null,
@@ -123,9 +128,7 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
       }
 
       // API URL 설정
-      const API_URL = process.env.NODE_ENV === 'development'
-        ? 'http://localhost:5000'
-        : process.env.NEXT_PUBLIC_API_URL || 'https://api.millo-ollim.com';
+      const API_URL = 'https://api.millo-ollim.com';
 
       // 구글 로그인 페이지로 리디렉션
       window.location.href = `${API_URL}/oauth2/authorization/google`;
