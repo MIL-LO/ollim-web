@@ -1,23 +1,8 @@
 import { atom, selector } from 'recoil';
+import type { User, AuthState, AuthTokens } from '@/types/auth.types';
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  provider: string;
-  status: 'PENDING' | 'ACTIVE' | 'WITHDRAWN';
-}
-
-export interface AuthState {
-  isLoggedIn: boolean;
-  isLoading: boolean;
-  user: User | null;
-  error: string | null;
-  tokens: {
-    accessToken: string;
-    refreshToken: string;
-  } | null;
-}
+// 재사용하기 위해 타입을 별도로 export
+export type { User, AuthState, AuthTokens };
 
 // 메인 인증 상태
 export const authState = atom<AuthState>({
@@ -46,5 +31,14 @@ export const userStatusSelector = selector({
   get: ({ get }) => {
     const auth = get(authState);
     return auth.user?.status || null;
+  },
+});
+
+// 로그인 상태 selector
+export const isLoggedInSelector = selector({
+  key: 'isLoggedInSelector',
+  get: ({ get }) => {
+    const auth = get(authState);
+    return auth.isLoggedIn && auth.user !== null;
   },
 });

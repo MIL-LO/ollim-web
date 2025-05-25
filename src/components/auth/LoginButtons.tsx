@@ -1,11 +1,24 @@
-// src/components/auth/LoginButtons.tsx
 'use client';
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRecoilState } from 'recoil';
-import { authState, AuthState, User } from '@/atoms/authAtoms';
+import { authState } from '@/atoms/authAtoms';
+import type { User, AuthState, OAuthMessage, OAuthProvider } from '@/types/auth.types';
 import { ButtonContainer, AppleButton, GoogleButton, ErrorMessage } from './styles';
+
+// 환경변수에서 API URL 가져오기
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error('NEXT_PUBLIC_API_URL 환경변수가 설정되지 않았습니다.');
+}
+
+// OAuth 엔드포인트들 - 환경변수 기반으로 동적 생성
+const OAUTH_ENDPOINTS = {
+  GOOGLE: `${API_BASE_URL}/oauth2/authorization/google`,
+  APPLE: `${API_BASE_URL}/oauth2/authorization/apple`,
+} as const;
 
 // 타입 확장: window 인터페이스에 ReactNativeWebView 추가
 declare global {
@@ -26,7 +39,7 @@ const isInApp = (): boolean => {
 };
 
 // 네이티브 앱으로 메시지 전송
-const sendToApp = (message: any): boolean => {
+const sendToApp = (message: OAuthMessage): boolean => {
   if (isInApp() && window.ReactNativeWebView) {
     window.ReactNativeWebView.postMessage(JSON.stringify(message));
     return true;
@@ -43,28 +56,32 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
     // 로컬 스토리지에서 토큰 체크
     const checkAuth = () => {
       const accessToken = localStorage.getItem('accessToken');
-      const status = localStorage.getItem('auth_status');
+      const status = localStorage.getItem('auth_status') as
+        | 'PENDING'
+        | 'ACTIVE'
+        | 'WITHDRAWN'
+        | null;
 
       if (accessToken) {
         // 사용자 정보 생성
-        const user: { provider: string; name: string; id: string; email: string } = {
+        const user: User = {
           id: '',
           name: '',
           email: '',
           provider: status === 'APPLE' ? 'apple' : 'google',
+          status: status || 'ACTIVE',
         };
 
         // 새 상태 객체 생성
-        const newAuthState: {
-          isLoading: boolean;
-          isLoggedIn: boolean;
-          error: null;
-          user: { provider: string; name: string; id: string; email: string };
-        } = {
+        const newAuthState: AuthState = {
           isLoggedIn: true,
           isLoading: false,
           error: null,
           user,
+          tokens: {
+            accessToken,
+            refreshToken: localStorage.getItem('refreshToken') || '',
+          },
         };
 
         setAuth(newAuthState);
@@ -113,7 +130,7 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
     };
   }, [router, setAuth]);
 
-  const handleGoogleLogin = () => {
+  const handleOAuthLogin = (provider: OAuthProvider) => {
     setAuth((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
@@ -121,78 +138,36 @@ const LoginButtons: React.FC<LoginButtonsProps> = ({ className }) => {
       if (isInApp()) {
         sendToApp({
           type: 'oauth_login',
-          provider: 'google',
+          provider,
         });
         setAuth((prev) => ({ ...prev, isLoading: false }));
         return;
       }
 
-      // API URL 설정
-      const API_URL = 'https://api.millo-ollim.com';
+      // 웹에서 OAuth 페이지로 리디렉션 - 환경변수 기반 URL 사용
+      const loginUrl = provider === 'google' ? OAUTH_ENDPOINTS.GOOGLE : OAUTH_ENDPOINTS.APPLE;
 
-      // 구글 로그인 페이지로 리디렉션
-      window.location.href = `${API_URL}/oauth2/authorization/google`;
+      window.location.href = loginUrl;
     } catch (error) {
-      console.error('구글 로그인 오류:', error);
+      console.error(`${provider} 로그인 오류:`, error);
       setAuth((prev) => ({
         ...prev,
         isLoading: false,
-        error: '구글 로그인 중 오류가 발생했습니다.',
+        error: `${provider === 'google' ? '구글' : '애플'} 로그인 중 오류가 발생했습니다.`,
       }));
     }
   };
 
-  const handleAppleLogin = async () => {
-    try {
-      setAuth((prev) => ({ ...prev, isLoading: true, error: null }));
-
-      if (isInApp()) {
-        // 네이티브 앱에서는 앱에 메시지 전송
-        sendToApp({
-          type: 'oauth_login',
-          provider: 'apple',
-        });
-      } else {
-        // 구글 로그인과 유사한 방식으로 처리
-        // API URL 설정
-        const API_URL = 'https://api.millo-ollim.com';
-
-        // 팝업 창으로 OAuth 인증 처리
-        const width = 600;
-        const height = 800;
-        const left = window.screenX + (window.outerWidth - width) / 2;
-        const top = window.screenY + (window.outerHeight - height) / 2;
-
-        // OAuth 요청 시작 기록
-        localStorage.setItem('oauth_in_progress', 'true');
-
-        // 인증 URL로 팝업 열기
-        const oauthWindow = window.open(
-          `${API_URL}/oauth2/authorization/apple`,
-          'oauth_apple',
-          `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
-        );
-
-        // 구글 로그인과 동일한 로직으로 처리
-        // ...
-      }
-    } catch (error) {
-      console.error('Apple 로그인 에러:', error);
-      setAuth((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: '애플 로그인에 실패했습니다.',
-      }));
-    }
-  };
+  const handleGoogleLogin = () => handleOAuthLogin('google');
+  const handleAppleLogin = () => handleOAuthLogin('apple');
 
   return (
     <ButtonContainer className={className}>
       <AppleButton onClick={handleAppleLogin} disabled={auth.isLoading}>
-        Apple로 시작하기
+        {auth.isLoading ? '로그인 중...' : 'Apple로 시작하기'}
       </AppleButton>
       <GoogleButton onClick={handleGoogleLogin} disabled={auth.isLoading}>
-        Google로 시작하기
+        {auth.isLoading ? '로그인 중...' : 'Google로 시작하기'}
       </GoogleButton>
 
       {auth.error && <ErrorMessage>{auth.error}</ErrorMessage>}
