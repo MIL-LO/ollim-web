@@ -13,7 +13,7 @@ export const EmotionList = styled.div`
 `;
 
 // EmotionOption 스타일 수정 - 감정별 배경색 추가
-export const EmotionOption = styled.button<{ selected: boolean; emotionId?: string }>`
+export const EmotionOption = styled.button<{ $selected: boolean; $emotionId?: string }>`
   width: 100%;
   max-width: 268px;
   min-height: 88px;
@@ -21,8 +21,8 @@ export const EmotionOption = styled.button<{ selected: boolean; emotionId?: stri
   justify-content: center;
   align-items: center;
   background-color: ${(props) => {
-    if (props.selected && props.emotionId) {
-      switch (props.emotionId) {
+    if (props.$selected && props.$emotionId) {
+      switch (props.$emotionId) {
         case 'very_happy':
           return '#F0FAFD';
         case 'happy':
@@ -39,7 +39,7 @@ export const EmotionOption = styled.button<{ selected: boolean; emotionId?: stri
     }
     return 'white';
   }};
-  border: 2px solid ${(props) => (props.selected ? '#00AFD8' : '#E0E0E0')};
+  border: 2px solid ${(props) => (props.$selected ? '#00AFD8' : '#E0E0E0')};
   border-radius: 100px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -53,17 +53,17 @@ export const EmotionOption = styled.button<{ selected: boolean; emotionId?: stri
   }
 
   &:hover {
-    border-color: ${(props) => (props.selected ? '#00AFD8' : '#BDBDBD')};
+    border-color: ${(props) => (props.$selected ? '#00AFD8' : '#BDBDBD')};
   }
 `;
 
 // EmotionText 스타일 수정 - 감정별 텍스트 색상 추가
-export const EmotionText = styled.span<{ selected: boolean; emotionId?: string }>`
+export const EmotionText = styled.span<{ $selected: boolean; $emotionId?: string }>`
   font-size: 16px;
-  font-weight: ${(props) => (props.selected ? '600' : '500')};
+  font-weight: ${(props) => (props.$selected ? '600' : '500')};
   color: ${(props) => {
-    if (props.selected && props.emotionId) {
-      switch (props.emotionId) {
+    if (props.$selected && props.$emotionId) {
+      switch (props.$emotionId) {
         case 'very_happy':
         case 'happy':
           return '#00AFD8'; // 밝은 배경색에는 파란색 텍스트
