@@ -71,8 +71,8 @@ export default function Step1() {
         {emotionOptions.map((emotion) => (
           <EmotionOption
             key={emotion.id}
-            selected={selectedEmotion === emotion.id}
-            emotionId={emotion.id}
+            $selected={selectedEmotion === emotion.id}
+            $emotionId={emotion.id}
             onClick={() => handleEmotionSelect(emotion.id)}
           >
             <EmotionContent>
@@ -86,7 +86,7 @@ export default function Step1() {
                   />
                 </EmotionIcon>
               )}
-              <EmotionText selected={selectedEmotion === emotion.id} emotionId={emotion.id}>
+              <EmotionText $selected={selectedEmotion === emotion.id} $emotionId={emotion.id}>
                 {emotion.label}
               </EmotionText>
             </EmotionContent>
