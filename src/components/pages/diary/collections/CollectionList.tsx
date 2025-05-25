@@ -5,6 +5,7 @@ import { KebabMenuSVG, PlusSVG } from '../../../../../public/svg/Icons';
 import { AlertModal, ConfirmModal } from '@/components/common/Modal';
 import { diaryCollections } from '@/components/pages/diary/MockData';
 import { useToast } from '@/hooks/useToast';
+import PageButton from '@/components/common/Button/PageButton';
 
 export const CollectionList = ({
   setSelectedCollection,
@@ -42,8 +43,8 @@ export const CollectionList = ({
         <ConfirmModal
           title="콜렉션 수정하기"
           onClose={() => setIsEditModal(false)}
-          onYes={() => {}}
-          yesBtnName="수정"
+          yesBtn={<PageButton title={'수정'} onClick={() => ''} />}
+          noBtn={<PageButton title={'취소'} onClick={() => ''} />}
         >
           <></>
         </ConfirmModal>
@@ -53,19 +54,16 @@ export const CollectionList = ({
         <AlertModal
           title="정말 삭제하시겠습니까?"
           descript="삭제하시면 복구할 수 없습니다."
-          noBtnName="취소할래요"
-          yesBtnName="삭제할래요"
+          yesBtn={<PageButton title={'삭제할래요'} onClick={handleDelCollection} />}
+          noBtn={<PageButton title={'취소할래요'} onClick={() => setIsDelModal(false)} />}
           onClose={() => setIsDelModal(false)}
-          onNo={() => setIsDelModal(false)}
-          onYes={handleDelCollection}
         />
       )}
       {isAddModal && (
         <ConfirmModal
           title="콜렉션 추가하기"
           onClose={() => setIsAddModal(false)}
-          onYes={() => {}}
-          yesBtnName="추가"
+          yesBtn={<PageButton title={'추가'} onClick={() => ''} />}
         >
           <></>
         </ConfirmModal>
@@ -131,7 +129,7 @@ export const CollectionAddItem = ({
 
 const Layout = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   justify-items: center;
   padding: 16px;
   gap: 22px;

@@ -2,8 +2,9 @@
 
 import styled from 'styled-components';
 import { LeftArrowSVG, SearchSVG } from '../../../public/svg/Icons';
-import { ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
+import { ReactNode, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { EditToggle } from '../pages/diary/DiaryPreviewList';
 
 interface Props {
   title: string;
@@ -13,6 +14,10 @@ interface Props {
 
 const TopNavigation = ({ title, rightIcon, onClickRightIcon }: Props) => {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const [isEditToggle, setIsEditToggle] = useState<boolean>(false);
+  const isDiaryDetailPage = /^\/diary\/\d+$/.test(pathname);
 
   return (
     <Layout>
@@ -20,7 +25,17 @@ const TopNavigation = ({ title, rightIcon, onClickRightIcon }: Props) => {
         <LeftArrowSVG />
       </button>
       <Title>{title}</Title>
-      <button onClick={onClickRightIcon}>{rightIcon}</button>
+      <RightBtn
+        onClick={() => {
+          if (onClickRightIcon) onClickRightIcon();
+          setIsEditToggle(!isEditToggle);
+        }}
+      >
+        {rightIcon}
+        {isDiaryDetailPage && isEditToggle && (
+          <EditToggle exit={() => setIsEditToggle(false)} onEdit={() => ''} onDel={() => ''} />
+        )}
+      </RightBtn>
     </Layout>
   );
 };
@@ -43,4 +58,8 @@ const Title = styled.div`
   line-height: 1.5rem;
 
   user-select: none;
+`;
+
+const RightBtn = styled.button`
+  position: relative;
 `;

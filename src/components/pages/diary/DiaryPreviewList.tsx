@@ -37,7 +37,12 @@ export const PreviewItem = ({ data }: { data: DiaryEntry }) => {
       </Contents>
       <Action>
         <div style={{ position: 'relative' }}>
-          <button onClick={() => setIsEditToggle(!isEditToggle)}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditToggle(!isEditToggle);
+            }}
+          >
             <EditSVG />
           </button>
           {isEditToggle && (
@@ -45,7 +50,12 @@ export const PreviewItem = ({ data }: { data: DiaryEntry }) => {
           )}
         </div>
 
-        <button onClick={() => setIsHeart(!isHeart)}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsHeart(!isHeart);
+          }}
+        >
           <HeartSVG color={isHeart ? '#00AFD8' : '#E8ECEF'} />
         </button>
       </Action>
@@ -64,14 +74,33 @@ export const EditToggle = ({
 }) => {
   return (
     <EditToggleLayout>
-      <button id="exitBtn" onClick={exit} style={{ marginRight: '12px' }}>
+      <button
+        id="exitBtn"
+        onClick={(e) => {
+          e.stopPropagation();
+          exit();
+        }}
+        style={{ marginRight: '12px' }}
+      >
         <ExitSVG color="#04192B" />
       </button>
       <div className="btnWrap">
-        <button id="editBtn" onClick={onEdit}>
+        <button
+          id="editBtn"
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit();
+          }}
+        >
           수정하기
         </button>
-        <button id="delBtn" onClick={onDel}>
+        <button
+          id="delBtn"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDel();
+          }}
+        >
           삭제하기
         </button>
       </div>

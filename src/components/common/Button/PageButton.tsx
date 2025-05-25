@@ -5,6 +5,7 @@
 
 'use client';
 
+import { colorGuide } from '@/styles/colorGuide';
 import React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -80,40 +81,40 @@ export const StyledButton = styled.button<StyledButtonProps>`
     switch ($design) {
       case 'darkBlue':
         return css`
-          background-color: ${({ theme }) => theme.colors.BG1_Main};
+          background-color: ${colorGuide.Bg1_Main};
           color: #fff;
           border: none;
 
           &:hover {
-            background-color: ${({ theme }) => theme.colors.BG1_Main};
+            background-color: ${colorGuide.Bg1_Main};
             background-color: ${{ $hoverBgColor }}; //[TODO: 색상 설정필요]
           }
 
           &:disabled {
-            background-color: ${({ theme }) => theme.colors.BG7_Disable};
+            background-color: ${colorGuide.Bg6_Disable};
             cursor: not-allowed;
           }
         `;
       case 'lightBlue':
         return css`
-          background-color: ${({ theme }) => theme.colors.BG2};
-          color: ${({ theme }) => theme.colors.BG1_Main};
+          background-color: ${colorGuide.Bg2};
+          color: ${colorGuide.Bg1_Main};
           border: none;
 
           &:hover {
-            background-color: ${({ theme }) => theme.colors.BG2};
+            background-color: ${colorGuide.Bg2};
           }
 
           &:disabled {
-            color: ${({ theme }) => theme.colors.TXT3};
-            background-color: ${({ theme }) => theme.colors.BG2};
+            color: ${colorGuide.Txt4_White};
+            background-color: ${colorGuide.Bg2};
             cursor: not-allowed;
           }
         `;
       case 'gray':
         return css`
-          background-color: ${({ theme }) => theme.colors.BG6_Gray};
-          color: ${({ theme }) => theme.colors.TXT4_Gray};
+          background-color: ${colorGuide.Bg7_Gray};
+          color: ${colorGuide.Txt3_Gray};
 
           &:hover {
             background-color: #f5f5f5;
