@@ -79,7 +79,7 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 토큰 갱신 - 환경변수에서 직접 URL 구성
+  // 토큰 갱신
   const refreshAccessToken = useCallback(async (): Promise<string | null> => {
     try {
       const tokens = getStoredTokens();
@@ -179,6 +179,9 @@ export const useAuth = () => {
           },
         });
 
+        // 여기서 리디렉션을 하지 않음 - GlobalAuthGuard에서 처리
+        console.log('로그인 성공, 상태:', userInfo.status);
+
         return { success: true, status: userInfo.status };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : '로그인 실패';
@@ -222,7 +225,7 @@ export const useAuth = () => {
         tokens: null,
       });
 
-      router.push('/login');
+      router.replace('/login');
       return true;
     } catch (error) {
       console.error('로그아웃 오류:', error);

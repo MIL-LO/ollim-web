@@ -9,7 +9,7 @@ interface GlobalAuthGuardProps {
 }
 
 // 인증이 필요하지 않은 공개 페이지들
-const PUBLIC_ROUTES = ['/login', '/auth/callback'];
+const PUBLIC_ROUTES = ['/', '/login', '/auth/callback'];
 
 // 특정 사용자 상태만 접근 가능한 페이지들
 const ROUTE_PERMISSIONS = {
@@ -24,6 +24,7 @@ export const GlobalAuthGuard: React.FC<GlobalAuthGuardProps> = ({ children }) =>
   const router = useRouter();
   const auth = useAuth();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [hasRedirected, setHasRedirected] = useState(false);
 
   useEffect(() => {
     // useAuth 훅에서 초기화가 완료되면 isInitialized를 true로 설정
@@ -34,7 +35,7 @@ export const GlobalAuthGuard: React.FC<GlobalAuthGuardProps> = ({ children }) =>
 
   // 페이지 접근 권한 확인
   useEffect(() => {
-    if (!isInitialized) return;
+    if (!isInitialized || hasRedirected) return;
 
     console.log(
       `페이지 접근 확인: ${pathname}, 로그인: ${auth.isLoggedIn}, 상태: ${auth.user?.status}`
@@ -42,12 +43,15 @@ export const GlobalAuthGuard: React.FC<GlobalAuthGuardProps> = ({ children }) =>
 
     // 공개 페이지는 접근 허용
     if (PUBLIC_ROUTES.includes(pathname)) {
-      // 로그인된 사용자가 로그인 페이지에 접근하면 리디렉션
-      if (pathname === '/login' && auth.isLoggedIn) {
+      // 로그인된 사용자가 로그인 페이지나 스플래시에 접근하면 리디렉션
+      if ((pathname === '/login' || pathname === '/') && auth.isLoggedIn) {
+        setHasRedirected(true);
         if (auth.user?.status === 'PENDING') {
-          router.push('/onboarding/step1');
+          console.log('PENDING 사용자 - 온보딩으로 이동');
+          router.replace('/onboarding/step1');
         } else if (auth.user?.status === 'ACTIVE') {
-          router.push('/home');
+          console.log('ACTIVE 사용자 - 홈으로 이동');
+          router.replace('/home');
         }
       }
       return;
@@ -56,7 +60,8 @@ export const GlobalAuthGuard: React.FC<GlobalAuthGuardProps> = ({ children }) =>
     // 로그인되지 않은 사용자는 로그인 페이지로
     if (!auth.isLoggedIn) {
       console.log('로그인 필요 - 로그인 페이지로 이동');
-      router.push('/login');
+      setHasRedirected(true);
+      router.replace('/login');
       return;
     }
 
@@ -67,11 +72,12 @@ export const GlobalAuthGuard: React.FC<GlobalAuthGuardProps> = ({ children }) =>
       // 특정 권한이 필요한 페이지
       if (!allowedStatuses.includes(auth.user?.status || '')) {
         console.log(`권한 없음: ${pathname}, 필요: ${allowedStatuses}, 현재: ${auth.user?.status}`);
+        setHasRedirected(true);
 
         if (auth.user?.status === 'PENDING') {
-          router.push('/onboarding/step1');
+          router.replace('/onboarding/step1');
         } else if (auth.user?.status === 'ACTIVE') {
-          router.push('/home');
+          router.replace('/home');
         } else {
           // WITHDRAWN 사용자는 로그아웃
           auth.logout();
@@ -82,16 +88,22 @@ export const GlobalAuthGuard: React.FC<GlobalAuthGuardProps> = ({ children }) =>
       // 기본적으로 ACTIVE 상태만 접근 가능
       if (auth.user?.status !== 'ACTIVE') {
         console.log(`기본 권한 필요: ACTIVE, 현재: ${auth.user?.status}`);
+        setHasRedirected(true);
 
         if (auth.user?.status === 'PENDING') {
-          router.push('/onboarding/step1');
+          router.replace('/onboarding/step1');
         } else {
-          router.push('/login');
+          router.replace('/login');
         }
         return;
       }
     }
-  }, [pathname, auth.isLoggedIn, auth.user?.status, isInitialized, router, auth]);
+  }, [pathname, auth.isLoggedIn, auth.user?.status, isInitialized, hasRedirected, router, auth]);
+
+  // 경로 변경 시 리디렉션 상태 초기화
+  useEffect(() => {
+    setHasRedirected(false);
+  }, [pathname]);
 
   // 초기화 중 로딩 화면
   if (!isInitialized || auth.isLoading) {
