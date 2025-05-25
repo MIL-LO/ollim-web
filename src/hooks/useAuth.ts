@@ -5,6 +5,13 @@ import { useRecoilState } from 'recoil';
 import { useRouter } from 'next/navigation';
 import { authState } from '@/atoms/authAtoms';
 import { JWTUtils } from '@/utils/jwt';
+import type { User, AuthTokens, AuthResult } from '@/types/auth.types';
+
+// 환경변수 검증
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+if (!API_BASE_URL) {
+  throw new Error('NEXT_PUBLIC_API_URL 환경변수가 설정되지 않았습니다.');
+}
 
 const TOKEN_STORAGE_KEY = 'auth_tokens';
 const REFRESH_THRESHOLD = 5 * 60; // 5분 전에 refresh
@@ -14,15 +21,15 @@ export const useAuth = () => {
   const router = useRouter();
 
   // 토큰 저장
-  const saveTokens = useCallback((accessToken: string, refreshToken: string) => {
-    const tokens = { accessToken, refreshToken };
+  const saveTokens = useCallback((accessToken: string, refreshToken: string): boolean => {
+    const tokens: AuthTokens = { accessToken, refreshToken };
 
     try {
-      // 여러 저장소에 저장
       localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(tokens));
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
       sessionStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(tokens));
 
-      // httpOnly 쿠키는 백엔드에서 설정하므로 여기서는 fallback용만
       document.cookie = `${TOKEN_STORAGE_KEY}=${JSON.stringify(tokens)}; path=/; max-age=2592000; SameSite=Lax`;
 
       return true;
@@ -32,18 +39,20 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 토큰 가져오기
-  const getStoredTokens = useCallback(() => {
+  const getStoredTokens = useCallback((): AuthTokens | null => {
     try {
-      // localStorage 우선 확인
       let stored = localStorage.getItem(TOKEN_STORAGE_KEY);
       if (stored) return JSON.parse(stored);
 
-      // sessionStorage 확인
+      const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (accessToken && refreshToken) {
+        return { accessToken, refreshToken };
+      }
+
       stored = sessionStorage.getItem(TOKEN_STORAGE_KEY);
       if (stored) return JSON.parse(stored);
 
-      // 쿠키 확인 (fallback)
       const cookies = document.cookie.split('; ');
       const tokenCookie = cookies.find((c) => c.startsWith(`${TOKEN_STORAGE_KEY}=`));
       if (tokenCookie) {
@@ -57,10 +66,12 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 토큰 제거
   const clearTokens = useCallback(() => {
     try {
       localStorage.removeItem(TOKEN_STORAGE_KEY);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('auth_status');
       sessionStorage.removeItem(TOKEN_STORAGE_KEY);
       document.cookie = `${TOKEN_STORAGE_KEY}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
     } catch (error) {
@@ -68,15 +79,15 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 토큰 갱신
-  const refreshAccessToken = useCallback(async () => {
+  // 토큰 갱신 - 환경변수에서 직접 URL 구성
+  const refreshAccessToken = useCallback(async (): Promise<string | null> => {
     try {
       const tokens = getStoredTokens();
       if (!tokens?.refreshToken) {
         throw new Error('Refresh token이 없습니다');
       }
 
-      const response = await fetch('/api/v1/auth/refresh', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,11 +102,8 @@ export const useAuth = () => {
       }
 
       const data = await response.json();
-
-      // 새 토큰 저장
       saveTokens(data.accessToken, data.refreshToken);
 
-      // 사용자 정보 업데이트
       const userInfo = JWTUtils.extractUserInfo(data.accessToken);
       if (userInfo) {
         setAuth((prev) => ({
@@ -117,18 +125,15 @@ export const useAuth = () => {
       return data.accessToken;
     } catch (error) {
       console.error('토큰 갱신 실패:', error);
-      // 갱신 실패 시 로그아웃
       await logout();
       return null;
     }
   }, [getStoredTokens, saveTokens, setAuth]);
 
-  // 유효한 액세스 토큰 가져오기 (자동 갱신 포함)
-  const getValidAccessToken = useCallback(async () => {
+  const getValidAccessToken = useCallback(async (): Promise<string | null> => {
     const tokens = getStoredTokens();
     if (!tokens?.accessToken) return null;
 
-    // 토큰이 만료되었거나 곧 만료될 예정이면 갱신
     if (
       JWTUtils.isExpired(tokens.accessToken) ||
       JWTUtils.getTimeUntilExpiry(tokens.accessToken) < REFRESH_THRESHOLD
@@ -140,35 +145,33 @@ export const useAuth = () => {
     return tokens.accessToken;
   }, [getStoredTokens, refreshAccessToken]);
 
-  // 로그인 처리
   const login = useCallback(
-    async (accessToken: string, refreshToken: string) => {
+    async (accessToken: string, refreshToken: string): Promise<AuthResult> => {
       try {
         setAuth((prev) => ({ ...prev, isLoading: true, error: null }));
 
-        // JWT에서 사용자 정보 추출
         const userInfo = JWTUtils.extractUserInfo(accessToken);
         if (!userInfo) {
           throw new Error('유효하지 않은 JWT 토큰');
         }
 
-        // 토큰 저장
         const saveSuccess = saveTokens(accessToken, refreshToken);
         if (!saveSuccess) {
           console.warn('토큰 저장 실패, 메모리에서만 사용');
         }
 
-        // 상태 업데이트
+        const user: User = {
+          id: userInfo.id,
+          email: userInfo.email,
+          name: userInfo.nickname,
+          provider: 'oauth',
+          status: userInfo.status,
+        };
+
         setAuth({
           isLoggedIn: true,
           isLoading: false,
-          user: {
-            id: userInfo.id,
-            email: userInfo.email,
-            name: userInfo.nickname,
-            provider: 'oauth',
-            status: userInfo.status,
-          },
+          user,
           error: null,
           tokens: {
             accessToken,
@@ -178,27 +181,26 @@ export const useAuth = () => {
 
         return { success: true, status: userInfo.status };
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : '로그인 실패';
         setAuth((prev) => ({
           ...prev,
           isLoading: false,
-          error: error instanceof Error ? error.message : '로그인 실패',
+          error: errorMessage,
         }));
-        return { success: false, error: error instanceof Error ? error.message : '로그인 실패' };
+        return { success: false, error: errorMessage };
       }
     },
     [setAuth, saveTokens]
   );
 
-  // 로그아웃
-  const logout = useCallback(async () => {
+  const logout = useCallback(async (): Promise<boolean> => {
     try {
       setAuth((prev) => ({ ...prev, isLoading: true }));
 
-      // 백엔드 로그아웃 API 호출
       const accessToken = await getValidAccessToken();
       if (accessToken) {
         try {
-          await fetch('/api/v1/auth/logout', {
+          await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -210,10 +212,8 @@ export const useAuth = () => {
         }
       }
 
-      // 토큰 제거
       clearTokens();
 
-      // 상태 초기화
       setAuth({
         isLoggedIn: false,
         isLoading: false,
@@ -222,9 +222,7 @@ export const useAuth = () => {
         tokens: null,
       });
 
-      // 로그인 페이지로 이동
       router.push('/login');
-
       return true;
     } catch (error) {
       console.error('로그아웃 오류:', error);
@@ -237,9 +235,8 @@ export const useAuth = () => {
     }
   }, [setAuth, clearTokens, getValidAccessToken, router]);
 
-  // 인증된 API 호출
   const authenticatedFetch = useCallback(
-    async (url: string, options: RequestInit = {}) => {
+    async (url: string, options: RequestInit = {}): Promise<Response> => {
       const accessToken = await getValidAccessToken();
       if (!accessToken) {
         throw new Error('유효한 액세스 토큰이 없습니다');
@@ -261,17 +258,14 @@ export const useAuth = () => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // URL 파라미터 확인 (OAuth 콜백)
         const urlParams = new URLSearchParams(window.location.search);
         const urlAccessToken = urlParams.get('accessToken');
         const urlRefreshToken = urlParams.get('refreshToken');
 
         if (urlAccessToken && urlRefreshToken) {
           console.log('URL 파라미터에서 토큰 발견');
-
           const result = await login(urlAccessToken, urlRefreshToken);
           if (result.success) {
-            // URL 파라미터 정리
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.delete('accessToken');
             currentUrl.searchParams.delete('refreshToken');
@@ -281,28 +275,22 @@ export const useAuth = () => {
           return;
         }
 
-        // 저장된 토큰 확인
         const tokens = getStoredTokens();
         if (tokens?.accessToken && tokens?.refreshToken) {
           console.log('저장된 토큰 발견');
 
-          // 토큰이 유효한지 확인
           if (!JWTUtils.isExpired(tokens.accessToken)) {
-            // 유효한 토큰으로 자동 로그인
             await login(tokens.accessToken, tokens.refreshToken);
           } else if (tokens.refreshToken) {
-            // 액세스 토큰은 만료되었지만 리프레시 토큰으로 갱신 시도
             console.log('만료된 토큰 감지, 자동 갱신 시도');
             const newAccessToken = await refreshAccessToken();
             if (!newAccessToken) {
-              // 갱신 실패 시 로그아웃 상태로
               setAuth((prev) => ({ ...prev, isLoading: false }));
             }
           } else {
             setAuth((prev) => ({ ...prev, isLoading: false }));
           }
         } else {
-          // 토큰 없음
           setAuth((prev) => ({ ...prev, isLoading: false }));
         }
       } catch (error) {
@@ -317,15 +305,13 @@ export const useAuth = () => {
       }
     };
 
-    // 이미 처리된 경우 스킵
     if (auth.isLoggedIn || (!auth.isLoading && !getStoredTokens())) {
       return;
     }
 
     initializeAuth();
-  }, []); // 빈 의존성 배열로 한 번만 실행
+  }, []);
 
-  // 토큰 자동 갱신 타이머 설정
   useEffect(() => {
     if (!auth.isLoggedIn || !auth.tokens?.accessToken) return;
 
