@@ -3,9 +3,9 @@
 
 import styled from 'styled-components';
 import { ExitSVG } from '../../../../public/svg/Icons';
-import PageButton from '../Button/PageButton';
 import { ReactElement } from 'react';
 import ModalWrapper from './ModalWrapper';
+import { colorGuide } from '@/styles/colorGuide';
 
 interface Props {
   onClose: () => void;
@@ -40,6 +40,7 @@ export const ConfirmModal = ({ onClose, title, descript, yesBtn, noBtn, children
     </ModalWrapper>
   );
 };
+
 /**Alert형 버튼 모달 */
 export const AlertModal = ({ onClose, noBtn, yesBtn, title, descript }: Props) => {
   return (
@@ -116,7 +117,7 @@ const Title = styled.div`
 
 const Discript = styled.div`
   margin: auto;
-  color: ${({ theme }) => theme.colors.TXT4_Gray};
+  color: ${colorGuide.Txt3_Gray};
   font-weight: 400;
   font-size: 12px;
   text-align: center;
