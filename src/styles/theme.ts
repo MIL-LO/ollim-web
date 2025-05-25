@@ -11,35 +11,33 @@
 // Light 모드 테마 정의
 const lightTheme = {
   colors: {
-    BG1_Main: '#00AFD8',
-    BG2: '#D2F6FF',
-    BG3: '#F0FAFD',
-    BG4: '#146E96',
-    BG5: '#254A7E',
-    BG6_Gray: '#E8ECEF',
-    BG7_Disable: '#C0EBF5',
-
-    TXT1_Main: '#04192B',
-    TXT2: '#103151',
-    TXT3: '#FFF',
-    TXT4_Gray: '#A5B7C6',
+    // BG1_Main: '#00AFD8',
+    // BG2: '#D2F6FF',
+    // BG3: '#F0FAFD',
+    // BG4: '#146E96',
+    // BG5: '#254A7E',
+    // BG6_Gray: '#E8ECEF',
+    // BG7_Disable: '#C0EBF5',
+    // TXT1_Main: '#04192B',
+    // TXT2: '#103151',
+    // TXT3: '#FFF',
+    // TXT4_Gray: '#A5B7C6',
   },
 };
 
 // Dark 모드 테마 정의
 const darkTheme = {
   colors: {
-    BG1_Main: '#00AFD8',
-    BG2: '#D2F6FF',
-    BG3: '#F0FAFD',
-    BG4: '#146E96',
-    BG5: '#254A7E',
-    // BG6_Gray: '#E8ECEF',
-
-    TXT1_Main: '#04192B',
-    TXT2: '#103151',
-    TXT3: '#FFF',
-    // TXT4_Gray: '#A5B7C6',
+    // BG1_Main: '#00AFD8',
+    // BG2: '#D2F6FF',
+    // BG3: '#F0FAFD',
+    // BG4: '#146E96',
+    // BG5: '#254A7E',
+    // // BG6_Gray: '#E8ECEF',
+    // TXT1_Main: '#04192B',
+    // TXT2: '#103151',
+    // TXT3: '#FFF',
+    // // TXT4_Gray: '#A5B7C6',
   },
 };
 

@@ -1,6 +1,6 @@
 // styled.d.ts
 import 'styled-components';
-import type { Theme } from './theme';
+import { Theme } from './theme';
 
 declare module 'styled-components' {
   export interface DefaultTheme extends Theme {}

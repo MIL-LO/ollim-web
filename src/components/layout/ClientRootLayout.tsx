@@ -4,8 +4,7 @@ import React, { ReactNode } from 'react';
 import StyledComponentsRegistry from '@/lib/registry';
 import GlobalStyle from '@/styles/GlobalStyle';
 import { AppLayout } from './AppLayout';
-import { ThemeProvider } from 'styled-components';
-import { theme } from '@/styles/theme';
+import { ThemeProvider } from '../providers/ThemeProvider';
 
 interface ClientLayoutProps {
   children: ReactNode;
@@ -16,7 +15,7 @@ const mode = 'lightMode';
 const ClientLayout = ({ children }: ClientLayoutProps) => {
   return (
     <StyledComponentsRegistry>
-      <ThemeProvider theme={theme[mode]}>
+      <ThemeProvider>
         <GlobalStyle />
         <AppLayout>{children}</AppLayout>
       </ThemeProvider>
