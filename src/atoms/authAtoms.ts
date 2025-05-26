@@ -1,35 +1,44 @@
-// src/atoms/authAtoms.ts
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
+import type { User, AuthState, AuthTokens } from '@/types/auth.types';
 
-// 제공자 타입을 문자열 리터럴 타입으로 정의
-export type AuthProvider = 'google' | 'apple' | 'unknown' | null;
+// 재사용하기 위해 타입을 별도로 export
+export type { User, AuthState, AuthTokens };
 
-// 사용자 정보 타입
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  provider: AuthProvider;
-}
-
-// 인증 상태 타입
-export interface AuthState {
-  isLoggedIn: boolean;
-  isLoading: boolean;
-  error: string | null;
-  user: User | null;
-}
-
-// 초기 상태
-const initialState: AuthState = {
-  isLoggedIn: false,
-  isLoading: false,
-  error: null,
-  user: null,
-};
-
-// 인증 상태 아톰
+// 메인 인증 상태
 export const authState = atom<AuthState>({
   key: 'authState',
-  default: initialState,
+  default: {
+    isLoggedIn: false,
+    isLoading: true, // 앱 시작 시 토큰 확인 중
+    user: null,
+    error: null,
+    tokens: null,
+  },
+});
+
+// 토큰 존재 여부 selector
+export const hasValidTokenSelector = selector({
+  key: 'hasValidTokenSelector',
+  get: ({ get }) => {
+    const auth = get(authState);
+    return auth.tokens !== null && auth.tokens.accessToken !== '';
+  },
+});
+
+// 사용자 상태 selector
+export const userStatusSelector = selector({
+  key: 'userStatusSelector',
+  get: ({ get }) => {
+    const auth = get(authState);
+    return auth.user?.status || null;
+  },
+});
+
+// 로그인 상태 selector
+export const isLoggedInSelector = selector({
+  key: 'isLoggedInSelector',
+  get: ({ get }) => {
+    const auth = get(authState);
+    return auth.isLoggedIn && auth.user !== null;
+  },
 });

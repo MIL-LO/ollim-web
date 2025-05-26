@@ -1,22 +1,16 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import RecoilProvider from '@/components/providers/RecoilProvider';
-import ClientLayout from '@/components/layout/ClientRootLayout';
+'use client';
 
-const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-  title: 'Ollim Web',
-  description: 'Ollim Web Application',
-};
+import React from 'react';
+import { RecoilRoot } from 'recoil';
+import { GlobalAuthGuard } from '@/components/auth/GlobalAuthGuard';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className={inter.className}>
-        <RecoilProvider>
-          <ClientLayout>{children}</ClientLayout>
-        </RecoilProvider>
+      <body>
+        <RecoilRoot>
+          <GlobalAuthGuard>{children}</GlobalAuthGuard>
+        </RecoilRoot>
       </body>
     </html>
   );

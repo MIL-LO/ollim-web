@@ -14,9 +14,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // OAuth 리디렉트 추가
+
   async redirects() {
-    // 환경 변수에서 API URL 가져오기
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.millo-ollim.com';
 
     return [
@@ -30,7 +29,31 @@ const nextConfig = {
         destination: `${API_URL}/oauth2/authorization/apple`,
         permanent: false,
       },
+      // OAuth2 콜백 처리를 위한 경로 설정 - Next.js 라우트로 변경
+      {
+        source: '/login/oauth2/code/:provider',
+        destination: '/auth/callback',
+        permanent: false,
+      },
     ];
+  },
+
+  // 404 에러를 줄이기 위한 rewrites 추가
+  async rewrites() {
+    return [
+      // Chrome DevTools 관련 파일들을 무시
+      {
+        source: '/.well-known/:path*',
+        destination: '/api/not-found',
+      },
+    ];
+  },
+
+  // 개발 환경에서의 로깅 개선
+  logging: {
+    fetches: {
+      fullUrl: process.env.NODE_ENV === 'development',
+    },
   },
 };
 
